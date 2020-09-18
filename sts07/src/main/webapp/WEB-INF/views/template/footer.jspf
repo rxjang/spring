@@ -1,0 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+	  <!-- end content -->
+	  </div>
+	  <div class="col-md-12" id="footer">
+	  	<address>비트캠프 서울시 서초구 강남대로 459 (서초동, 백암빌딩)</address>
+		Copyright &copy; 비트캠프 All rights reserved.
+	  </div>
+	</div>
+</div>

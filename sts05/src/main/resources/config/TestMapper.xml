@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+<mapper namespace="test">
+  <select id="selectDept" resultType="map" parameterType="int">
+  	select * from dept03 where deptno=#{val}
+  </select>
+  <insert id="insertTest" parameterType="map">
+  	insert into dept03 values (#{deptno},#{dname},#{loc})
+  </insert>
+  <delete id="deleteTest" parameterType="_int">
+  	delete from dept03 where deptno=#{val}
+  </delete>
+
+</mapper>

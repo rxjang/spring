@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap>
+	<typeAlias alias="bean" type="dom.bit.sts03.dept.model.entity.DeptVo"/>
+	<select id="selectAll" resultClass="bean">
+		select * from dept03 order by deptno=desc
+	</select>
+	<select id="selectOne" resultClass="bean" parameterClass="int">
+		select * from dept03 where deptno=#deptno#
+	</select>
+	<insert id="insertOne" parameterClass="bean">
+		insert into dept03 (dname,loc) values= (#dname#,#loc#)
+	</insert>
+	<update id="updateOne" parameterClass="bean">
+		update dept03 set dname=#dname#, loc=#loc# where deptno=#deptno#
+	</update>
+	<delete id="deleteOne" parameterClass="int">
+		delete from dept03 where deptno=#value#
+	</delete>
+</sqlMap>

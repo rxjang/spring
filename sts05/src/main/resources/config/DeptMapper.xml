@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="dept">
+
+	<select id="selectDept" resultType="deptBean" parameterType="deptBean">
+		select * from dept03
+		<if test="deptno==null and dname=null">
+			order by deptno desc		
+		</if>
+		<trim prefix="where" prefixOverrides="and">
+			<if test="deptno!=null and deptno!=0">
+			 	and deptno=#{deptno}
+			</if>
+			<if test="dname!=null">
+				 and dname=#{dname}
+			</if>
+		</trim>
+	</select>
+	<select id="selectEach" resultType="deptBean">
+		select * from dept03 where deptno in(
+		<foreach item="su" index="index" collection="list" separator=",">
+			#{su}
+		</foreach>
+		)
+	</select>
+  
+</mapper>
