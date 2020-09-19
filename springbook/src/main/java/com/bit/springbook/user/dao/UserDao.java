@@ -60,15 +60,9 @@ public class UserDao {//스프링 빈
 	}
 	
 	public void deleteAll() throws SQLException{
-		this.jdbcContextWithStatementStrategy(new StatementStrategy() {
-			@Override
-			public PreparedStatement makePreparedStatement(Connection conn) throws SQLException {
-				PreparedStatement pstmt=conn.prepareStatement("delete from users");
-				return pstmt;
-			}
-		});
+		this.jdbcContext.executeSql("delete from users");
 	}
-	
+
 	public int getCount() throws SQLException{
 		Connection conn=null;
 		PreparedStatement pstmt=null;
