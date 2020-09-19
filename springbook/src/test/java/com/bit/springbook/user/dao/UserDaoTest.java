@@ -20,11 +20,11 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.bit.springbook.user.domain.User;
 
-//@RunWith(SpringJUnit4ClassRunner.class)//스프링의 테스트 컨텍스트 프레임워크의 JUnit확장기능 지정
-//@ContextConfiguration(locations = "/test-applicationContext.xml")
+@RunWith(SpringJUnit4ClassRunner.class)//스프링의 테스트 컨텍스트 프레임워크의 JUnit확장기능 지정
+@ContextConfiguration(locations = "/test-applicationContext.xml")
 //@DirtiesContext//테스트 메소드에서 애플리케이션 컨텍스트의 구성이나 상태를 변경한다는 것을 테스트 컨택스트 프레임워크에 알려준다.
 public class UserDaoTest {
-//	@Autowired
+	@Autowired
 	UserDao dao;
 	
 	private User user0;
@@ -38,10 +38,10 @@ public class UserDaoTest {
 		this.user1=new User("ruixian1","seohyun1","dksdkffiwna");
 		this.user2=new User("ruixian2","seohyun2","dksdkffiwna");
 		
-		dao=new UserDao();
-		DataSource dataSource=new SingleConnectionDataSource(
-				"jdbc:mysql://localhost/testdb?&useSSL=false&serverTimezone=UTC","spring","book",true);
-		dao.setDataSource(dataSource);
+//		dao=new UserDao();
+//		DataSource dataSource=new SingleConnectionDataSource(
+//				"jdbc:mysql://localhost/testdb?&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true","spring","book",true);
+//		dao.setDataSource(dataSource);
 		
 		System.out.println(this);
 	}
@@ -83,11 +83,11 @@ public class UserDaoTest {
 		
 	}
 	
-	@Test(expected=EmptyResultDataAccessException.class)
-	public void getUserFailure() throws SQLException, ClassNotFoundException {
-		dao.deleteAll();
-		assertThat(dao.getCount(),is(0));
-		
-		dao.get("unknow_id");
-	}
+//	@Test(expected=EmptyResultDataAccessException.class)
+//	public void getUserFailure() throws SQLException, ClassNotFoundException {
+//		dao.deleteAll();
+//		assertThat(dao.getCount(),is(0));
+//		
+//		dao.get("unknow_id");
+//	}
 }
