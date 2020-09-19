@@ -1,16 +1,23 @@
 package com.bit.springbook.user.dao;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
 import java.sql.SQLException;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator;
+import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -19,9 +26,10 @@ import com.bit.springbook.user.domain.User;
 @RunWith(SpringJUnit4ClassRunner.class)//스프링의 테스트 컨텍스트 프레임워크의 JUnit확장기능 지정
 @ContextConfiguration(locations = "/test-applicationContext.xml")
 //@DirtiesContext//테스트 메소드에서 애플리케이션 컨텍스트의 구성이나 상태를 변경한다는 것을 테스트 컨택스트 프레임워크에 알려준다.
-public class UserDaoTest {
+public class UserDaoJdbcTest {
 	@Autowired
-	UserDao dao;
+	UserDaoJdbc dao;
+	@Autowired DataSource dataSource;
 	
 	private User user0;
 	private User user1;
@@ -112,10 +120,34 @@ public class UserDaoTest {
 		checkSameUser(user1,users2.get(1));
 		checkSameUser(user2,users2.get(2));
 	}
+
+//	@Test
+	@Test(expected=DataAccessException.class)
+	public void duplicateKey() {
+		dao.deleteAll();
+		
+		dao.add(user0);
+		dao.add(user0);
+	}
+	
+//	@Test
+//	public void sqlExceptionTranslate() {
+//		dao.deleteAll();
+//		
+//		try {
+//			dao.add(user0);
+//			dao.add(user0);
+//		}catch(DuplicateKeyException ex) {
+//			SQLException sqlEx=(SQLException) ex.getRootCause();
+//			SQLExceptionTranslator set= new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
+//			assertSame(set.translate(null, null, sqlEx),DuplicateKeyException.class);
+//		}
+//	}
 	
 	public void checkSameUser(User user1,User user2) {
 		assertThat(user1.getId(),is(user2.getId()));
 		assertThat(user1.getName(),is(user2.getName()));
 		assertThat(user1.getPassword(),is(user2.getPassword()));
 	}
+
 }
