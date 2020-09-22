@@ -38,9 +38,9 @@ public class UserDaoJdbcTest {
 	
 	@Before
 	public void setUp() {
-		this.user0=new User("ruixian0","seohyun0","dksdkffiwna");
-		this.user1=new User("ruixian1","seohyun1","dksdkffiwna");
-		this.user2=new User("ruixian2","seohyun2","dksdkffiwna");
+		this.user0=new User("ruixian0","seohyun0","dksdkffiwna",Level.BASIC,1,0);
+		this.user1=new User("ruixian1","seohyun1","dksdkffiwna",Level.SILVER,55,10);
+		this.user2=new User("ruixian2","seohyun2","dksdkffiwna",Level.GOLD,100,40);
 		
 //		dao=new UserDao();
 //		DataSource dataSource=new SingleConnectionDataSource(
@@ -61,13 +61,10 @@ public class UserDaoJdbcTest {
 		assertThat(dao.getCount(),is(2));
 		
 		User userget0=dao.get(user0.getId());
-		assertThat(userget0.getName(), is(user0.getName()));
-		assertThat(userget0.getPassword(), is(user0.getPassword()));
+		checkSameUser(userget0, user0);
 		
 		User userget1=dao.get(user1.getId());
-		assertThat(userget1.getName(), is(user1.getName()));
-		assertThat(userget1.getPassword(), is(user1.getPassword()));
-		
+		checkSameUser(userget1, user1);
 	}
 	
 	@Test
@@ -121,13 +118,32 @@ public class UserDaoJdbcTest {
 		checkSameUser(user2,users2.get(2));
 	}
 
-//	@Test
 	@Test(expected=DataAccessException.class)
 	public void duplicateKey() {
 		dao.deleteAll();
 		
 		dao.add(user0);
 		dao.add(user0);
+	}
+	
+	@Test
+	public void updte() {
+		dao.deleteAll();
+		
+		dao.add(user0);
+		dao.add(user1);
+		
+		user0.setName("서현");
+		user0.setPassword("Wkdtlfna");
+		user0.setLevel(Level.GOLD);
+		user0.setLogin(1000);
+		user0.setRecommend(999);
+		dao.update(user0);
+		
+		User user0update=dao.get(user0.getId());
+		checkSameUser(user0, user0update);
+		User user1same=dao.get(user1.getId());
+		checkSameUser(user1, user1same);
 	}
 	
 //	@Test
@@ -142,12 +158,16 @@ public class UserDaoJdbcTest {
 //			SQLExceptionTranslator set= new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
 //			assertSame(set.translate(null, null, sqlEx),DuplicateKeyException.class);
 //		}
-//	}
+//	}//다른 오류 발생해버림 ㅎㅎㅎ
 	
 	public void checkSameUser(User user1,User user2) {
 		assertThat(user1.getId(),is(user2.getId()));
 		assertThat(user1.getName(),is(user2.getName()));
 		assertThat(user1.getPassword(),is(user2.getPassword()));
+		assertThat(user1.getLevel(),is(user2.getLevel()));
+		assertThat(user1.getLogin(),is(user2.getLogin()));
+		assertThat(user1.getRecommend(),is(user2.getRecommend()));
+		
 	}
 
 }
