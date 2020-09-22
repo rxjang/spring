@@ -1,12 +1,15 @@
 package com.bit.springbook.user.service;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import com.bit.springbook.user.dao.Level;
@@ -16,8 +19,10 @@ import com.bit.springbook.user.domain.User;
 import lombok.Setter;
 
 public class UserService{
+
+	//트랜잭션 경계설정을 위한 추상 인터페이스
 	@Setter
-	private DataSource dataSource;//connection을 생성할 때 사용할 DataSource를 DI받기로 한다
+	private PlatformTransactionManager transactionManager;
 	
 	@Setter
 	UserDao userDao;
@@ -25,12 +30,9 @@ public class UserService{
 	public static final int MIN_LOGCOUNT_FOR_SILVER=50;
 	public static final int MIN_RECOMMEND_FOR_GOLD=30;
 	
-	public void upgradeLevels() throws Exception {
-		TransactionSynchronizationManager.initSynchronization();
-		//트랜잭션 동기화 관리자를 이용해 동기화 작업을 초기화 한다.
-		Connection c=DataSourceUtils.getConnection(dataSource);//DB커넥션 생성과 동기화를 함께 해주는 유틸리티 메소드
-		//DB커넥션을 생성하고 트랜잭션을 시작한다. 이후의 DAO작업은모두 여기서 시작한 트랜잭션 안에서 진행된다.
-		c.setAutoCommit(false);
+	public void upgradeLevels(){
+		TransactionStatus status=this.transactionManager.getTransaction(new DefaultTransactionDefinition());
+		
 		try {
 			List<User> users=userDao.getAll();
 			for(User user:users) {
@@ -38,16 +40,10 @@ public class UserService{
 					upgradeLevel(user);
 				}
 			}
-			c.commit();//정상적으로 마치면 트랜잭션 커밋
+			this.transactionManager.commit(status);//정상적으로 마치면 트랜잭션 커밋
 		}catch(Exception e) {
-			c.rollback();//예외가 발생하면 롤백
+			this.transactionManager.rollback(status);//예외가 발생하면 롤백
 			throw e;
-		}finally {
-			DataSourceUtils.releaseConnection(c, dataSource);
-			//스츠링 유틸리티 메소드를 이용해 DB커넥션을 안전하게 닫는다
-			TransactionSynchronizationManager.unbindResource(this.dataSource);
-			TransactionSynchronizationManager.clearSynchronization();
-			//동기화 작업 종료 및 정리
 		}
 	}
 	
