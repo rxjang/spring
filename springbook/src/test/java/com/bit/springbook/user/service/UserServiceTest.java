@@ -7,9 +7,12 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +33,10 @@ public class UserServiceTest {
 	UserService userService;
 	
 	@Autowired
-	UserDaoJdbc dao;
+	DataSource dataSource;
+	
+	@Autowired
+	UserDao dao;
 
 	List<User> users;
 	
@@ -51,7 +57,7 @@ public class UserServiceTest {
 	}
 	
 	@Test
-	public void upgraeLevels() {
+	public void upgradeLevels() throws Exception {
 		dao.deleteAll();
 		
 		for(User user:users)dao.add(user);
@@ -91,7 +97,42 @@ public class UserServiceTest {
 		
 		assertSame(userWithLevelRead.getLevel(),userWithLevel.getLevel());
 		assertSame(userWithoutLevelRead.getLevel(),Level.BASIC);
+	}
+	
+	static class TestUserService extends UserService {
+		private String id;
 		
+		private TestUserService(String id) {
+			this.id=id;//예외를 발생시킬 User 오브젝트의 id를 지정할 수 있게 만듦
+		}
 		
+		@Override
+		protected void upgradeLevel(User user) {//UserService의 메소드를 오버라이드
+			if(user.getId().equals(this.id))throw new TestUserServiceException();
+			//지정된 id의 User 오브젝트가 발견되면 예외를 던져서 작업을 강제로 중단한다.
+			super.upgradeLevel(user);
+		}
+	}
+	
+	static class TestUserServiceException extends RuntimeException{}
+
+	@Test
+	public void upgradeAllorNothing() throws Exception {
+		UserService testUserService=new TestUserService(users.get(3).getId());
+		testUserService.setUserDao(this.dao); //userDao를 수동 DI해준다
+		testUserService.setDataSource(this.dataSource);
+		dao.deleteAll();
+		for(User user:users)dao.add(user);
+		
+		try {
+			testUserService.upgradeLevels();
+			fail("TestUserServiceException expected");
+			//TestUserService는 업그레이드 작업 중에 예외가 발생해야 함. 정상종료라면 문제가 있으니 실패
+		}catch(TestUserServiceException e) {
+			//TestUSserService가 던져주는 예외를 잡아서 계속 진행되도록 함. 그 외의 예외라면 테스트 실패
+		}
+		
+		checkLevel(users.get(1), false);
+		//예외가 발생하기 전에 레벨 변경이 있었던 사용자의 레벨이 처음 상태로 바뀌었나 확인
 	}
 }
