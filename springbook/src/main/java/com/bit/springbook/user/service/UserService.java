@@ -77,17 +77,18 @@ public class UserService{
 	}
 	
 	private void sendUpgradeEMail(User user) {
-//		JavaMailSenderImpl mailSender=new JavaMailSenderImpl();	//mailSender구현 클래스의 오브젝트를 생성한다
-//		mailSender.setHost("mail.server.com");
-//		
-		SimpleMailMessage mailMessage=new SimpleMailMessage();	
-		mailMessage.setTo(user.getEmail());
-		mailMessage.setFrom("rxforp@naver.com");
-		mailMessage.setSubject("Upgrade 안내");
-		mailMessage.setText("사용자님의 등급이"+user.getLevel().name()+"로 업그레이드 되었습니다");
-		//mailMessage 인터페이스의 구현 클래스 오브젝트를 만들어 메일 내용을 작성한다
+//			JavaMailSenderImpl mailSender=new JavaMailSenderImpl();	//mailSender구현 클래스의 오브젝트를 생성한다
+//			mailSender.setHost("mail.server.com");
+			
+			SimpleMailMessage mailMessage=new SimpleMailMessage();	
+			mailMessage.setTo(user.getEmail());
+			mailMessage.setFrom("useradmin@ksug.org");
+			mailMessage.setSubject("Upgrade 안내");
+			mailMessage.setText("사용자님의 등급이"+user.getLevel().name()+"로 업그레이드 되었습니다");
+			//mailMessage 인터페이스의 구현 클래스 오브젝트를 만들어 메일 내용을 작성한다
+			
+			this.mailSender.send(mailMessage);
 		
-		this.mailSender.send(mailMessage);
 //		Properties props=new Properties();
 //		props.put("mail.smtp.host", "mail.ksug.org");
 //		Session s=Session.getInstance(props,null);
@@ -95,7 +96,7 @@ public class UserService{
 //		MimeMessage message=new MimeMessage(s);
 //		
 //		try {
-//			message.setFrom(new InternetAddress("rxforp@naver.com"));
+//			message.setFrom(new InternetAddress("useradmin@ksug.org"));
 //			message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
 //			message.setSubject("Upgade 안내");
 //			message.setText("사용자님의 등급이"+user.getLevel().name()+"로 업그레이드 되었습니다");

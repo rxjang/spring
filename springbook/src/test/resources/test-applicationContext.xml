@@ -7,7 +7,7 @@
 	<bean id="userService" class="com.bit.springbook.user.service.UserService">
 		<property name="transactionManager" ref="transactionManager"></property>
 		<property name="userDao" ref="userDao"></property>
-		<property name="mailSender" value="mailSender"></property>
+		<property name="mailSender" ref="mailSender"></property>
 	</bean>
 	
 	<bean id="userDao" class="com.bit.springbook.user.dao.UserDaoJdbc">
@@ -24,6 +24,5 @@
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
 	<bean id="mailSender" class="com.bit.springbook.user.service.DummyMailSender">
-		<property name="host" value="mail.server.com"/>
 	</bean>
 </beans>

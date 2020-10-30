@@ -22,7 +22,7 @@ public class User {
 	@NonNull Level level;
 	@NonNull int login;
 	@NonNull int recommend;
-	String email;
+	@NonNull String email;
 	
 	public void upgradeLevel() {
 		Level nextLevel=this.level.nextLevel();

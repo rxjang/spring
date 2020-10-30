@@ -38,9 +38,9 @@ public class UserDaoJdbcTest {
 	
 	@Before
 	public void setUp() {
-		this.user0=new User("ruixian0","seohyun0","dksdkffiwna",Level.BASIC,1,0);
-		this.user1=new User("ruixian1","seohyun1","dksdkffiwna",Level.SILVER,55,10);
-		this.user2=new User("ruixian2","seohyun2","dksdkffiwna",Level.GOLD,100,40);
+		this.user0=new User("ruixian0","seohyun0","dksdkffiwna",Level.BASIC,1,0,"rxforp@naver.com");
+		this.user1=new User("ruixian1","seohyun1","dksdkffiwna",Level.SILVER,55,10,"rxforp@naver.com");
+		this.user2=new User("ruixian2","seohyun2","dksdkffiwna",Level.GOLD,100,40,"rxforp@naver.com");
 		
 //		dao=new UserDao();
 //		DataSource dataSource=new SingleConnectionDataSource(
