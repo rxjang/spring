@@ -7,19 +7,22 @@ import com.bit.springbook.user.dao.Level;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Setter
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@RequiredArgsConstructor
 public class User {
-	String id;
-	String name;
-	String password;
-	Level level;
-	int login;
-	int recommend;
+	@NonNull String id;
+	@NonNull String name;
+	@NonNull String password;
+	@NonNull Level level;
+	@NonNull int login;
+	@NonNull int recommend;
+	String email;
 	
 	public void upgradeLevel() {
 		Level nextLevel=this.level.nextLevel();

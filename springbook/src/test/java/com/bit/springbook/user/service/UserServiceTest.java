@@ -18,6 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -32,15 +33,14 @@ import com.bit.springbook.user.domain.User;
 public class UserServiceTest {
 	@Autowired
 	UserService userService;
-	
 	@Autowired
 	DataSource dataSource;
-	
 	@Autowired
 	UserDaoJdbc dao;
-
 	@Autowired
 	PlatformTransactionManager transactionManager;
+	@Autowired
+	MailSender mailSender;
 	
 	List<User> users;
 	
@@ -132,6 +132,7 @@ public class UserServiceTest {
 			testUserService.upgradeLevels();
 			fail("TestUserServiceException expected");
 			//TestUserService는 업그레이드 작업 중에 예외가 발생해야 함. 정상종료라면 문제가 있으니 실패
+			testUserService.setMailSender(mailSender);
 		}catch(TestUserServiceException e) {
 			//TestUSserService가 던져주는 예외를 잡아서 계속 진행되도록 함. 그 외의 예외라면 테스트 실패
 		}

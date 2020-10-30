@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="emp">
+	<select id="selectAll" resultType="empBean" parameterType="_int">
+  		select * from emp03
+  		<where>
+	  		<if test="val eq null">
+				sabun between 5*(1-1)+1 and 5*(1-1)+1+(5-1)		
+	  		</if>
+	  		<if test="val neq null">
+	  			sabun between 5*(#{val}-1)+1 and 5*(#{val}-1)+1+(5-1)
+	  		</if>
+  		</where>
+  	</select>
+  	<insert id="insertOne" parameterType="empBean">
+ 		insert into emp03 (name, nalja,pay,deptno) values (#{name},now(),#{pay},#{deptno})
+  	</insert>
+  </mapper>
