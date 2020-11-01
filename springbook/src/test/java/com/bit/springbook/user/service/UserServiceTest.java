@@ -1,7 +1,7 @@
 package com.bit.springbook.user.service;
 
-import static com.bit.springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static com.bit.springbook.user.service.UserService.MIN_RECOMMEND_FOR_GOLD;
+import static com.bit.springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static com.bit.springbook.user.service.UserServiceImpl.MIN_RECOMMEND_FOR_GOLD;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertSame;
@@ -14,7 +14,6 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import org.apache.taglibs.standard.tag.common.fmt.RequestEncodingSupport;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,16 +27,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.bit.springbook.user.dao.Level;
+import com.bit.springbook.user.dao.MockUserDao;
 import com.bit.springbook.user.dao.UserDaoJdbc;
 import com.bit.springbook.user.domain.User;
-
-import lombok.Getter;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/test-applicationContext.xml")
 public class UserServiceTest {
-	@Autowired
-	UserService userService;
+	@Autowired UserService userService;
+	@Autowired UserServiceImpl userServiceImpl;
 	@Autowired
 	DataSource dataSource;
 	@Autowired
@@ -68,27 +66,34 @@ public class UserServiceTest {
 	@Test
 	@DirtiesContext
 	public void upgradeLevels() throws Exception{
-		dao.deleteAll();
-		for(User user:users)dao.add(user);
+		UserServiceImpl userServiceImpl=new UserServiceImpl();
+		//고립된 테스트에서는 테스트 대상 오브젝트를 직접 생성하면된다.
+
+		MockUserDao mockUserDao=new MockUserDao(this.users);
+		userServiceImpl.setUserDao(mockUserDao);
+		//목 오브젝트로 만든 UserDao를 직접 DI 해준다.
 		
 		MockMailSender mockMailSender=new MockMailSender();
-		userService.setMailSender(mockMailSender);
+		userServiceImpl.setMailSender(mockMailSender);
+		//메일 발송 여부 확인을 위해 목 오브젝트 DI
 		
-		userService.upgradeLevels();
+		userServiceImpl.upgradeLevels();//테스트 대상 실행
 		
-//		checkLevelUpgraded(users.get(0),false);
-		
-		checkLevel(users.get(0), false);
-		checkLevel(users.get(1), true);
-		checkLevel(users.get(2), false);
-		checkLevel(users.get(3), true);
-		checkLevel(users.get(4), false);
+		List<User> updated=mockUserDao.getUpdated();//MockUserDao로부터 업데이트 결과를 가져온다
+		assertThat(updated.size(),is(2));
+		checkUserAndLevel(updated.get(0),"joytouch",Level.SILVER);
+		checkUserAndLevel(updated.get(1),"madnite1",Level.GOLD);
 		
 		List<String> request=mockMailSender.getRequests();
 		assertThat(request.size(),is(2));
 		assertThat(request.get(0),is(users.get(1).getEmail()));
 		assertThat(request.get(1),is(users.get(3).getEmail()));
+		//목오브젝트를 이용한 결과 확인
+	}
 	
+	public void checkUserAndLevel(User updated,String expectedId, Level expectedLevel) {
+		assertThat(updated.getId(),is(expectedId));
+		assertThat(updated.getLevel(),is(expectedLevel));
 	}
 	
 	public void checkLevel(User user,boolean upgraded) {
@@ -118,7 +123,7 @@ public class UserServiceTest {
 		assertSame(userWithoutLevelRead.getLevel(),Level.BASIC);
 	}
 	
-	static class TestUserService extends UserService {
+	static class TestUserService extends UserServiceImpl {
 		private String id;
 		
 		private TestUserService(String id) {
@@ -137,17 +142,22 @@ public class UserServiceTest {
 
 	@Test
 	public void upgradeAllorNothing() throws Exception {
-		UserService testUserService=new TestUserService(users.get(3).getId());
+		TestUserService testUserService=new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(this.dao); //userDao를 수동 DI해준다
-		testUserService.setTransactionManager(transactionManager);
+		testUserService.setMailSender(mailSender);
+		
+		UserServiceTx txUserService=new UserServiceTx();
+		txUserService.setTransactionManager(transactionManager);
+		txUserService.setUserService(testUserService);
+		//트랜잭션 기능을 분리한 UserServiceTx는 예외 발생용으로 수정할 필요가 없으니 그대로 사용한다.
+		
 		dao.deleteAll();
 		for(User user:users)dao.add(user);
 		
 		try {
-			testUserService.upgradeLevels();
+			txUserService.upgradeLevels();
 			fail("TestUserServiceException expected");
-			//TestUserService는 업그레이드 작업 중에 예외가 발생해야 함. 정상종료라면 문제가 있으니 실패
-			testUserService.setMailSender(mailSender);
+			//트랜잭션 기능을 분리한 오브젲ㄱ트를 통해 예외 발생용 TestUserService가 호출되게 해야함
 		}catch(TestUserServiceException e) {
 			//TestUSserService가 던져주는 예외를 잡아서 계속 진행되도록 함. 그 외의 예외라면 테스트 실패
 		}

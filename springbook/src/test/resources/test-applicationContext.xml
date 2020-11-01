@@ -4,10 +4,14 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 <!-- 	<bean id="connectionMaker" class="com.bit.springbook.user.dao.SimpleConnectionMaker"/> -->
-	<bean id="userService" class="com.bit.springbook.user.service.UserService">
-		<property name="transactionManager" ref="transactionManager"></property>
-		<property name="userDao" ref="userDao"></property>
-		<property name="mailSender" ref="mailSender"></property>
+	<bean id="userService" class="com.bit.springbook.user.service.UserServiceTx">
+		<property name="transactionManager" ref="transactionManager"/>
+		<property name="userService" ref="userServiceImpl"/>
+	</bean>
+	
+	<bean id="userServiceImpl" class="com.bit.springbook.user.service.UserServiceImpl">
+		<property name="userDao" ref="userDao"/>
+		<property name="mailSender" ref="mailSender"/>
 	</bean>
 	
 	<bean id="userDao" class="com.bit.springbook.user.dao.UserDaoJdbc">
