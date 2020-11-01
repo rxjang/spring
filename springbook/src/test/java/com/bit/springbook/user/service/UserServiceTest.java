@@ -7,6 +7,11 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,6 +22,7 @@ import javax.sql.DataSource;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
@@ -28,6 +34,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import com.bit.springbook.user.dao.Level;
 import com.bit.springbook.user.dao.MockUserDao;
+import com.bit.springbook.user.dao.UserDao;
 import com.bit.springbook.user.dao.UserDaoJdbc;
 import com.bit.springbook.user.domain.User;
 
@@ -89,6 +96,38 @@ public class UserServiceTest {
 		assertThat(request.get(0),is(users.get(1).getEmail()));
 		assertThat(request.get(1),is(users.get(3).getEmail()));
 		//목오브젝트를 이용한 결과 확인
+	}
+	
+	@Test
+	public void mockUpgradeLevels() throws Exception{
+		UserServiceImpl userServiceImpl=new UserServiceImpl();
+		
+		UserDao mockUserDao =mock(UserDao.class);
+		when(mockUserDao.getAll()).thenReturn(this.users);
+		userServiceImpl.setUserDao(mockUserDao);
+		//다이내믹한 목 오브젝트 생성과 메소드의 리턴 값 설정, 그리고 DI까지 세줄이면 충분하다.
+		
+		MailSender mockMailSender=mock(MailSender.class);
+		userServiceImpl.setMailSender(mockMailSender);
+		//리턴 값이 없는 메소드를 가진 목 오브젝트는 더욱 간단하게 만들 수 있다.
+		
+		userServiceImpl.upgradeLevels();
+		
+		verify(mockUserDao,times(2)).update(any(User.class));
+		//times 메소드 호출을 횟수를 검증해준다. any()를 사용하면 파라미터의 내용은 무시하고 호출 횟수만 확인할 수 있다.
+		verify(mockUserDao,times(2)).update(any(User.class));
+		verify(mockUserDao).update(users.get(1));
+		assertThat(users.get(1).getLevel(),is(Level.SILVER));
+		verify(mockUserDao).update(users.get(3));
+		assertThat(users.get(3).getLevel(),is(Level.GOLD));
+		//목 오브젝트가 제공하는 검증 기능을 통해서 어떤 메소드가 몇 번 호출됐는지, 파라미터는 무엇인지 확인할 수 있다.
+		
+		ArgumentCaptor<SimpleMailMessage> mailMessageArg=ArgumentCaptor.forClass(SimpleMailMessage.class);
+		verify(mockMailSender,times(2)).send(mailMessageArg.capture());
+		//파라미터를 정밀하게 검사하기 위해 캡처할수도있다.
+		List<SimpleMailMessage> mailMessages=mailMessageArg.getAllValues();
+		assertThat(mailMessages.get(0).getTo()[0],is(users.get(1).getEmail()));
+		assertThat(mailMessages.get(1).getTo()[0],is(users.get(3).getEmail()));
 	}
 	
 	public void checkUserAndLevel(User updated,String expectedId, Level expectedLevel) {
