@@ -4,11 +4,13 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
 <!-- 	<bean id="connectionMaker" class="com.bit.springbook.user.dao.SimpleConnectionMaker"/> -->
+	<!-- 데코레이터 -->
 	<bean id="userService" class="com.bit.springbook.user.service.UserServiceTx">
 		<property name="transactionManager" ref="transactionManager"/>
 		<property name="userService" ref="userServiceImpl"/>
 	</bean>
 	
+	<!-- 타켓 -->
 	<bean id="userServiceImpl" class="com.bit.springbook.user.service.UserServiceImpl">
 		<property name="userDao" ref="userDao"/>
 		<property name="mailSender" ref="mailSender"/>
