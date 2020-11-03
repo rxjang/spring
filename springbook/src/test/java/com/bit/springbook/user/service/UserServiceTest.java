@@ -13,6 +13,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -185,10 +186,12 @@ public class UserServiceTest {
 		testUserService.setUserDao(this.dao); //userDao를 수동 DI해준다
 		testUserService.setMailSender(mailSender);
 		
-		UserServiceTx txUserService=new UserServiceTx();
-		txUserService.setTransactionManager(transactionManager);
-		txUserService.setUserService(testUserService);
-		//트랜잭션 기능을 분리한 UserServiceTx는 예외 발생용으로 수정할 필요가 없으니 그대로 사용한다.
+		TransactionHandler txHandler=new TransactionHandler();
+		txHandler.setTarget(testUserService);
+		txHandler.setPattern("upgradeLevels");
+		//트랜잭션 핸들러가 필요한 정보와 오브젝트를 DI 해준다.
+		UserService txUserService=(UserService)Proxy.newProxyInstance(getClass().getClassLoader(),
+				new Class[] {UserService.class}, txHandler);
 		
 		dao.deleteAll();
 		for(User user:users)dao.add(user);
