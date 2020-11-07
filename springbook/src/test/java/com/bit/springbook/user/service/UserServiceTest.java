@@ -25,6 +25,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -44,14 +45,11 @@ import com.bit.springbook.user.domain.User;
 public class UserServiceTest {
 	@Autowired UserService userService;
 	@Autowired UserServiceImpl userServiceImpl;
-	@Autowired
-	DataSource dataSource;
-	@Autowired
-	UserDaoJdbc dao;
-	@Autowired
-	PlatformTransactionManager transactionManager;
-	@Autowired
-	MailSender mailSender;
+	@Autowired DataSource dataSource;
+	@Autowired UserDaoJdbc dao;
+	@Autowired PlatformTransactionManager transactionManager;
+	@Autowired MailSender mailSender;
+	@Autowired ApplicationContext context;	//펙토리 빈을 가져오려면 애플리케이션 컨텍스트가 필요하다
 	
 	List<User> users;
 	
@@ -181,17 +179,16 @@ public class UserServiceTest {
 	static class TestUserServiceException extends RuntimeException{}
 
 	@Test
+	@DirtiesContext //다이내믹프록시 팩토리 비능ㄹ 직접 맏을어 사용할 때는 없앴다가 다시 등장한 컨텍스트 무효화 어노테이션
 	public void upgradeAllorNothing() throws Exception {
 		TestUserService testUserService=new TestUserService(users.get(3).getId());
 		testUserService.setUserDao(this.dao); //userDao를 수동 DI해준다
 		testUserService.setMailSender(mailSender);
 		
-		TransactionHandler txHandler=new TransactionHandler();
-		txHandler.setTarget(testUserService);
-		txHandler.setPattern("upgradeLevels");
-		//트랜잭션 핸들러가 필요한 정보와 오브젝트를 DI 해준다.
-		UserService txUserService=(UserService)Proxy.newProxyInstance(getClass().getClassLoader(),
-				new Class[] {UserService.class}, txHandler);
+		TxProxyFactoryBean txProxyFactoryBean=context.getBean("&userService", TxProxyFactoryBean.class);
+		txProxyFactoryBean.setTarget(testUserService);
+		UserService txUserService=(UserService)txProxyFactoryBean.getObject();
+		//변경된 타깃 설정을 이용해서 트랜잭션 다이내믹 프로시 오브젝트를 다시 생성하나. 
 		
 		dao.deleteAll();
 		for(User user:users)dao.add(user);
