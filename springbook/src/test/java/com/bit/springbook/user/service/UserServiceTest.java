@@ -43,9 +43,9 @@ import com.bit.springbook.user.domain.User;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/test-applicationContext.xml")
 public class UserServiceTest {
-	@Autowired UserService userService;
+	UserService userService;
 	@Autowired UserServiceImpl userServiceImpl;
-	@Autowired DataSource dataSource;
+//	@Autowired DataSource dataSource;
 	@Autowired UserDaoJdbc dao;
 	@Autowired PlatformTransactionManager transactionManager;
 	@Autowired MailSender mailSender;
