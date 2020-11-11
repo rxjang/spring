@@ -44,8 +44,9 @@ import com.bit.springbook.user.domain.User;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/test-applicationContext.xml")
 public class UserServiceTest {
-	UserService userService;
-	@Autowired UserServiceImpl userServiceImpl;
+	@Autowired UserService userService;
+	@Autowired UserService testUserService;
+	UserServiceImpl userServiceImpl;
 //	@Autowired DataSource dataSource;
 	@Autowired UserDaoJdbc dao;
 	@Autowired PlatformTransactionManager transactionManager;
@@ -64,12 +65,7 @@ public class UserServiceTest {
 				new User("green","오민규","p5",Level.GOLD,100,Integer.MIN_VALUE,"rxforp@naver.com")
 			);
 	}
-	
-	@Test
-	public void bean() {
-		assertThat(this.userService,is(notNullValue()));
-	}
-	
+
 	@Test
 	@DirtiesContext
 	public void upgradeLevels() throws Exception{
@@ -162,12 +158,8 @@ public class UserServiceTest {
 		assertSame(userWithoutLevelRead.getLevel(),Level.BASIC);
 	}
 	
-	static class TestUserService extends UserServiceImpl {
-		private String id;
-		
-		private TestUserService(String id) {
-			this.id=id;//예외를 발생시킬 User 오브젝트의 id를 지정할 수 있게 만듦
-		}
+	static class TestUserServiceImpl extends UserServiceImpl {
+		private String id="madnite1";
 		
 		@Override
 		protected void upgradeLevel(User user) {//UserService의 메소드를 오버라이드
@@ -180,22 +172,12 @@ public class UserServiceTest {
 	static class TestUserServiceException extends RuntimeException{}
 
 	@Test
-	@DirtiesContext //다이내믹프록시 팩토리 비능ㄹ 직접 맏을어 사용할 때는 없앴다가 다시 등장한 컨텍스트 무효화 어노테이션
 	public void upgradeAllorNothing() throws Exception {
-		TestUserService testUserService=new TestUserService(users.get(3).getId());
-		testUserService.setUserDao(this.dao); //userDao를 수동 DI해준다
-		testUserService.setMailSender(mailSender);
-		
-		ProxyFactoryBean txProxyFactoryBean=context.getBean("&userService", ProxyFactoryBean.class);
-		txProxyFactoryBean.setTarget(testUserService);
-		UserService txUserService=(UserService)txProxyFactoryBean.getObject();
-		//변경된 타깃 설정을 이용해서 트랜잭션 다이내믹 프로시 오브젝트를 다시 생성하나. 
-		
 		dao.deleteAll();
 		for(User user:users)dao.add(user);
 		
 		try {
-			txUserService.upgradeLevels();
+			this.testUserService.upgradeLevels();
 			fail("TestUserServiceException expected");
 			//트랜잭션 기능을 분리한 오브젲ㄱ트를 통해 예외 발생용 TestUserService가 호출되게 해야함
 		}catch(TestUserServiceException e) {
@@ -205,6 +187,7 @@ public class UserServiceTest {
 		checkLevel(users.get(1), false);
 		//예외가 발생하기 전에 레벨 변경이 있었던 사용자의 레벨이 처음 상태로 바뀌었나 확인
 	}
+	
 	
 	static class MockMailSender implements MailSender{
 		private List<String> requests=new ArrayList<String>();
