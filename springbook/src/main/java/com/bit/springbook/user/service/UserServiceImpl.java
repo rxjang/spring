@@ -55,8 +55,6 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	private void sendUpgradeEMail(User user) {
-//			JavaMailSenderImpl mailSender=new JavaMailSenderImpl();	//mailSender구현 클래스의 오브젝트를 생성한다
-//			mailSender.setHost("mail.server.com");
 			
 			SimpleMailMessage mailMessage=new SimpleMailMessage();	
 			mailMessage.setTo(user.getEmail());
@@ -66,23 +64,7 @@ public class UserServiceImpl implements UserService{
 			//mailMessage 인터페이스의 구현 클래스 오브젝트를 만들어 메일 내용을 작성한다
 			
 			this.mailSender.send(mailMessage);
-		
-//		Properties props=new Properties();
-//		props.put("mail.smtp.host", "mail.ksug.org");
-//		Session s=Session.getInstance(props,null);
-//		
-//		MimeMessage message=new MimeMessage(s);
-//		
-//		try {
-//			message.setFrom(new InternetAddress("useradmin@ksug.org"));
-//			message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
-//			message.setSubject("Upgade 안내");
-//			message.setText("사용자님의 등급이"+user.getLevel().name()+"로 업그레이드 되었습니다");
-//			
-//			Transport.send(message);
-//		} catch (MessagingException e) {
-//			e.printStackTrace();
-//		}
+
 	}
 
 	@Override
@@ -90,5 +72,17 @@ public class UserServiceImpl implements UserService{
 		if(user.getLevel()==null) user.setLevel(Level.BASIC);
 		userDao.add(user);
 	}
+
+	@Override
+	public User get(String id) {return userDao.get(id); }
+
+	@Override
+	public List<User> getAll() {return userDao.getAll();}
+
+	@Override
+	public void update(User user) {userDao.update(user);}
+
+	@Override
+	public void deleteAll() {userDao.deleteAll();}
 
 }

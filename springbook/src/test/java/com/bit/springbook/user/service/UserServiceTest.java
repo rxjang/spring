@@ -27,6 +27,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.TransientDataAccessResourceException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -158,7 +159,7 @@ public class UserServiceTest {
 		assertSame(userWithoutLevelRead.getLevel(),Level.BASIC);
 	}
 	
-	static class TestUserServiceImpl extends UserServiceImpl {
+	static class TestUserService extends UserServiceImpl {
 		private String id="madnite1";
 		
 		@Override
@@ -167,6 +168,21 @@ public class UserServiceTest {
 			//지정된 id의 User 오브젝트가 발견되면 예외를 던져서 작업을 강제로 중단한다.
 			super.upgradeLevel(user);
 		}
+		//읽기 전용 트랜잭션의 대상인 get으로 시작하는 메소드를 오바라이드한다.
+		public List<User> getAll(){
+			for(User user:super.getAll()){
+				super.update(user);
+				//강제로 쓰기 시도를한다. 여기서 읽기 전용 속성으로 인한 예외가 발생해야 한다.
+			}
+			return null;
+			//메소드가 끝나기 전에 예외가 발생해야 하니 리턴값은 별 의미없다. 
+		}
+	}
+	
+	@Test(expected=TransientDataAccessResourceException.class)
+	public void readOnlyTransactionAttribute() {
+		testUserService.getAll();
+		//트랜잭션 속성이 제대로 적용됐다면 여기서 읽기전용 속성을 위반했기 때문에 예외가 발생해야 한다.
 	}
 	
 	static class TestUserServiceException extends RuntimeException{}
