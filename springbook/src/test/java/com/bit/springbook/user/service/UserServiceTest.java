@@ -71,23 +71,17 @@ public class UserServiceTest {
 
 	@Test
 	public void transactionSync() {
-		dao.deleteAll();
-		assertThat(dao.getCount(),is(0));
-		//트랜잭션을 롤백했을 때 돌아갈 초기 상태를 만들기 위해 트랜잭션 시잔 전에 초기화를 해둔다.
-		
 		DefaultTransactionDefinition txDefinition=new DefaultTransactionDefinition();
 		TransactionStatus txStatus=transactionManager.getTransaction(txDefinition);
+
+		try {
+			userService.deleteAll();
+			userService.add(users.get(0));
+			userService.add(users.get(1));
+		}finally {
+			transactionManager.rollback(txStatus);
+		}
 		
-		userService.add(users.get(0));
-		userService.add(users.get(1));
-		assertThat(dao.getCount(),is(2));
-		//dao의 getCount()메소드도 같은 트랜잭션에서 동작한다.add()에 의해 두 개가 등록됐는지 확인해 둔다.
-		
-		transactionManager.rollback(txStatus);
-		//강제로 롤백한다. 트랜잭션 시작 전 상태로 돌아가야한다.
-		
-		assertThat(dao.getCount(),is(0));
-		//add()의 작업이 취소되고 트랜잭션 시작 이전의 상태임을 확인할 수 있다.
 	}
 	
 	@Test
