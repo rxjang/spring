@@ -71,24 +71,23 @@ public class UserServiceTest {
 
 	@Test
 	public void transactionSync() {
-		DefaultTransactionDefinition txDefinition=new DefaultTransactionDefinition();
-		//트랜잭션 정의는 기본값을 사용한다.
-		txDefinition.setReadOnly(true);
-		//일기전용 트랜잭션으로 정의한다. 
-		TransactionStatus txStatus=transactionManager.getTransaction(txDefinition);
-		/*트랜잭션 매니저에게 트랜잭션을 요청한다.
-		 * 기존에 시작된 트랜잭션이 없으니 새로운 트랜잭션을 시작시키고 트랜잭션 정보를 돌려준다.
-		 * 동시에 만들어진 트랜잭션을 다른 곳에서도 사용할 수 있도록 동기화한다.
-		 */
+		dao.deleteAll();
+		assertThat(dao.getCount(),is(0));
+		//트랜잭션을 롤백했을 때 돌아갈 초기 상태를 만들기 위해 트랜잭션 시잔 전에 초기화를 해둔다.
 		
-		userService.deleteAll();
-		//테스트 코드에서 시작한 트랜잭션에 참여한다면 읽기 전용 속성을 위반했으니 예외가 발생해야 한다.
+		DefaultTransactionDefinition txDefinition=new DefaultTransactionDefinition();
+		TransactionStatus txStatus=transactionManager.getTransaction(txDefinition);
 		
 		userService.add(users.get(0));
 		userService.add(users.get(1));
+		assertThat(dao.getCount(),is(2));
+		//dao의 getCount()메소드도 같은 트랜잭션에서 동작한다.add()에 의해 두 개가 등록됐는지 확인해 둔다.
 		
-		transactionManager.commit(txStatus);
-		//앞에서 시작한 트랜잭션을 커밋한다.
+		transactionManager.rollback(txStatus);
+		//강제로 롤백한다. 트랜잭션 시작 전 상태로 돌아가야한다.
+		
+		assertThat(dao.getCount(),is(0));
+		//add()의 작업이 취소되고 트랜잭션 시작 이전의 상태임을 확인할 수 있다.
 	}
 	
 	@Test
