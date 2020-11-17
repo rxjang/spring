@@ -12,15 +12,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import com.bit.springbook.user.domain.User;
+import com.bit.springbook.user.sqlService.SqlService;
 
 import lombok.Setter;
 
 public class UserDaoJdbc implements UserDao{//스프링 빈
 	private JdbcTemplate jdbcTemplate;
 	@Setter
-	private String sqlAdd;
-	@Setter
 	private Map<String,String> sqlMap;
+	@Setter
+	private SqlService sqlService;
+	
 	
 	//새터이면서 JdbcCotnext에 대한 생성,DI작업을 동시에 수행한다.
 	public void setDataSource(DataSource dataSource) {
@@ -42,29 +44,29 @@ public class UserDaoJdbc implements UserDao{//스프링 빈
 		}
 	};
 	
+	public void add(final User user) throws DuplicateKeyException{
+		this.jdbcTemplate.update(this.sqlService.getSql("userAdd"), 
+				user.getId(),user.getName(),user.getPassword(),user.getLevel().intValue(),user.getLogin(),user.getRecommend(),user.getEmail());
+	}
+	
 	public User get(String id) {
-		return this.jdbcTemplate.queryForObject(this.sqlMap.get("get"), new Object[] {id},this.userMapper);
+		return this.jdbcTemplate.queryForObject(this.sqlService.getSql("userGet"), new Object[] {id},this.userMapper);
 	}
 	
 	public List<User> getAll() {
-		return this.jdbcTemplate.query(this.sqlMap.get("getAll"), this.userMapper);
-	}
-	
-	public void add(final User user) throws DuplicateKeyException{
-		this.jdbcTemplate.update(this.sqlMap.get("add"), 
-			user.getId(),user.getName(),user.getPassword(),user.getLevel().intValue(),user.getLogin(),user.getRecommend(),user.getEmail());
+		return this.jdbcTemplate.query(this.sqlService.getSql("userGetAll"), this.userMapper);
 	}
 	
 	public void deleteAll() {
-		this.jdbcTemplate.update(this.sqlMap.get("deleteAll"));
+		this.jdbcTemplate.update(this.sqlService.getSql("userDeleteAll"));
 	}
 
 	public int getCount() {
-		return this.jdbcTemplate.queryForInt(this.sqlMap.get("getCount"));
+		return this.jdbcTemplate.queryForInt(this.sqlService.getSql("userGetCount"));
 	}
 
 	public void update(User user) {
-		this.jdbcTemplate.update(this.sqlMap.get("update"),
+		this.jdbcTemplate.update(this.sqlService.getSql("userUpdate"),
 				user.getName(),user.getPassword(),user.getLevel().intValue(),user.getLogin(),user.getRecommend(),user.getEmail(),user.getId());
 	}
 	
