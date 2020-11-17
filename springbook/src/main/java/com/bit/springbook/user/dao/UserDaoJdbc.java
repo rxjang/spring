@@ -3,6 +3,7 @@ package com.bit.springbook.user.dao;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -16,6 +17,10 @@ import lombok.Setter;
 
 public class UserDaoJdbc implements UserDao{//스프링 빈
 	private JdbcTemplate jdbcTemplate;
+	@Setter
+	private String sqlAdd;
+	@Setter
+	private Map<String,String> sqlMap;
 	
 	//새터이면서 JdbcCotnext에 대한 생성,DI작업을 동시에 수행한다.
 	public void setDataSource(DataSource dataSource) {
@@ -38,28 +43,28 @@ public class UserDaoJdbc implements UserDao{//스프링 빈
 	};
 	
 	public User get(String id) {
-		return this.jdbcTemplate.queryForObject("select * from users where id=?", new Object[] {id},this.userMapper);
+		return this.jdbcTemplate.queryForObject(this.sqlMap.get("get"), new Object[] {id},this.userMapper);
 	}
 	
 	public List<User> getAll() {
-		return this.jdbcTemplate.query("select * from users order by id", this.userMapper);
+		return this.jdbcTemplate.query(this.sqlMap.get("getAll"), this.userMapper);
 	}
 	
 	public void add(final User user) throws DuplicateKeyException{
-		this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend, email) values (?,?,?,?,?,?,?)", 
+		this.jdbcTemplate.update(this.sqlMap.get("add"), 
 			user.getId(),user.getName(),user.getPassword(),user.getLevel().intValue(),user.getLogin(),user.getRecommend(),user.getEmail());
 	}
 	
 	public void deleteAll() {
-		this.jdbcTemplate.update("delete from users");
+		this.jdbcTemplate.update(this.sqlMap.get("deleteAll"));
 	}
 
 	public int getCount() {
-		return this.jdbcTemplate.queryForInt("select count(*) from users");
+		return this.jdbcTemplate.queryForInt(this.sqlMap.get("getCount"));
 	}
 
 	public void update(User user) {
-		this.jdbcTemplate.update("update users set name=?, password=?, level=?, login=?, recommend=?, email=? where id=?",
+		this.jdbcTemplate.update(this.sqlMap.get("update"),
 				user.getName(),user.getPassword(),user.getLevel().intValue(),user.getLogin(),user.getRecommend(),user.getEmail(),user.getId());
 	}
 	

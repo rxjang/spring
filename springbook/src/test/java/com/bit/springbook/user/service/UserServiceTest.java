@@ -49,8 +49,6 @@ import com.bit.springbook.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations="/test-applicationContext.xml")
-@Transactional
-@TransactionConfiguration(defaultRollback=false)
 public class UserServiceTest {
 	@Autowired UserService userService;
 	@Autowired UserService testUserService;
@@ -75,7 +73,6 @@ public class UserServiceTest {
 	}
 
 	@Test
-	@Rollback
 	public void transactionSync() {
 			userService.deleteAll();
 			userService.add(users.get(0));
