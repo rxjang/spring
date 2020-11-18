@@ -4,8 +4,9 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans
 	http://www.springframework.org/schema/beans/spring-beans.xsd">
 	
-	<bean id="unmarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-		<property name="contextPath" value="com.bit.springbook.user.sqlService.jaxb"/>
+	<bean id="unmarshaller" class="org.springframework.oxm.castor.CastorMarshaller">
+		<!-- <property name="contextPath" value="com.bit.springbook.user.sqlService.jaxb"/> -->
+		<property name="mappingLocation" value="com/bit/springbook/learningtest/spring/oxm/mapping.xml"></property>
 	</bean>
 	
 </beans>
