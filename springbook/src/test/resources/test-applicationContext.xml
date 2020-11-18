@@ -7,18 +7,7 @@
 		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd">
 	
-	<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>
-	
-	<bean id="transactionPointcut" class="org.springframework.aop.aspectj.AspectJExpressionPointcut">
-		<property name="expression" value="execution(* *..*ServiceImpl.upgrade*(..))"/>
-	</bean>
-	
 	<bean id="testUserService" class="com.bit.springbook.user.service.UserServiceTest$TestUserService" parent="userService"/>
-	
-	<bean id="transactionAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
-		<property name="advice" ref="transactionAdvice"/>
-		<property name="pointcut" ref="transactionPointcut"/>
-	</bean>
 	
 	<!-- 타켓 -->
 	<bean id="userService" class="com.bit.springbook.user.service.UserServiceImpl">
@@ -31,17 +20,7 @@
 		<property name="sqlService" ref="sqlService"/>
 	</bean>
 	
-	<bean id="sqlService" class="com.bit.springbook.user.sqlService.SimpleSqlService">
-		<property name="sqlMap">
-			<map>
-				<entry key="userAdd" value="insert into users (id, name, password, level, login, recommend, email) values (?,?,?,?,?,?,?)"/>
-				<entry key="userGet" value="select * from users where id=?"/>
-				<entry key="userGetAll" value="select * from users order by id"/>
-				<entry key="userDeleteAll" value="delete from users"/>
-				<entry key="userGetCount" value="select count(*) from users"/>
-				<entry key="userUpdate" value="update users set name=?, password=?, level=?, login=?, recommend=?, email=? where id=?"/>
-			</map>
-		</property>
+	<bean id="sqlService" class="com.bit.springbook.user.sqlService.XmlSqlService">
 	</bean>
 	
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
@@ -51,18 +30,9 @@
 		<property name="password" value="book"/>
 	</bean>
 	
-	<!--aop -->
-	<aop:config>
-		<aop:advisor advice-ref="transactionAdvice" pointcut="bean(*Service)"/>
-	</aop:config>
-	
-	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
-		<tx:attributes>
-			<tx:method name="get*" read-only="true"/>
-			<tx:method name="*" />
-		</tx:attributes>
-	</tx:advice>
-	
+	<!-- aop -->
+	<tx:annotation-driven />
+
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="dataSource"/>
 	</bean>
