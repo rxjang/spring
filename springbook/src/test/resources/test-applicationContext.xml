@@ -22,11 +22,16 @@
 		<property name="sqlService" ref="sqlService"/>
 	</bean>
 	
-	<bean id="sqlService" class="com.bit.springbook.user.sqlService.XmlSqlService">
-		<property name="sqlReader" ref="sqlService"/>
-		<property name="sqlRegistry" ref="sqlService"/>
-		<property name="sqlmapFile" value="sqlmap.xml"/>
+	<bean id="sqlService" class="com.bit.springbook.user.sqlService.DefaultSqlService">
+	<!-- 	<property name="sqlReader" ref="sqlReader"/>
+		<property name="sqlRegistry" ref="sqlRegistry"/> -->
 	</bean>
+	
+	<bean id="sqlReader" class="com.bit.springbook.user.sqlService.JaxbXmlSqlReader">
+		<property name="sqlmapFile" value="sqlmap.xml"></property>
+	</bean>
+	
+	<bean id="sqlRegistry" class="com.bit.springbook.user.sqlService.HashMapSqlRegistry"></bean>
 	
 	<bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
 		<property name="driverClass" value="com.mysql.cj.jdbc.Driver"/>
