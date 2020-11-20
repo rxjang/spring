@@ -7,6 +7,8 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.oxm.Unmarshaller;
 
 import com.bit.springbook.user.dao.UserDao;
@@ -21,18 +23,18 @@ public class OxmSqlService implements SqlService {
 	private final BaseSqlService baseSqlService=new BaseSqlService();
 	//SqlService의 실제 구현 부분을 위임할 대상인 BaseSqlService를 인스턴스 변수로 정의해둔다.
 	
-	@Setter
-	private SqlRegistry sqlRegistry=new HashMapSqlRegistry();
-	//oxmSqlReader와 달리 단지 디폴트 오브젝트로 만들어진 프롶티다. 따라서 필요에 따라 다른 DI를 통해 교체 가능하다.
-	
-	
 	public void setUnmarshaller(Unmarshaller unmarshaller) {
 		this.oxmSqlReader.setUnmarshaller(unmarshaller);
 	}
 	
-	public void setSqlmapFile(String sqlmapFile) {
-		this.oxmSqlReader.setSqlmapFile(sqlmapFile);
+	public void setSqlmap(Resource sqlmap) {
+		this.oxmSqlReader.setSqlmap(sqlmap);
 	}
+	
+	@Setter
+	private SqlRegistry sqlRegistry=new HashMapSqlRegistry();
+	//oxmSqlReader와 달리 단지 디폴트 오브젝트로 만들어진 프롶티다. 따라서 필요에 따라 다른 DI를 통해 교체 가능하다.
+
 	@PostConstruct
 	public void loadSql() {
 		this.baseSqlService.setSqlReader(this.oxmSqlReader);
@@ -52,22 +54,21 @@ public class OxmSqlService implements SqlService {
 	private class OxmSqlReader implements SqlReader{
 		//private 멤버 클래스로 정의한다. 톱레벨 클래스인 OxmSqlService만이 사용할 수 있다.
 		@Setter
-		private Unmarshaller unmarshaller;
-		private final static String DEFAULT_SQLMAP_FILE="sqlmap.xml";
+		private Resource sqlmap=new ClassPathResource("sqlmap.xml",UserDao.class);
 		@Setter
-		private String sqlmapFile=DEFAULT_SQLMAP_FILE;
+		private Unmarshaller unmarshaller;
 		
 		@Override
 		public void read(SqlRegistry sqlRegistry) {
 			try {
 				Source source = new StreamSource(
-						UserDao.class.getResourceAsStream(this.sqlmapFile));
+						sqlmap.getInputStream());
 				Sqlmap sqlmap=(Sqlmap)this.unmarshaller.unmarshal(source);
 				for(SqlType sql:sqlmap.getSql()) {
 					sqlRegistry.registerSql(sql.getKey(), sql.getValue());
 				}
 			}catch(IOException e) {
-				throw new IllegalArgumentException(this.sqlmapFile+"을 가올 수 없습니다",e);
+				throw new IllegalArgumentException(this.sqlmap+"을 가올 수 없습니다",e);
 			}
 		}
 		
