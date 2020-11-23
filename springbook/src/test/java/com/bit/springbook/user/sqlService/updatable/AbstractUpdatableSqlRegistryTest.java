@@ -24,10 +24,10 @@ public abstract class AbstractUpdatableSqlRegistryTest {
 	
 	@Test
 	public void find() {
-		checkFindResult("SQL1","SQL2","SQL3");
+		checkFind("SQL1","SQL2","SQL3");
 	}
 	
-	protected void checkFindResult(String expected1, String expected2, String expected3) {
+	protected void checkFind(String expected1, String expected2, String expected3) {
 		assertThat(sqlRegistry.findSql("KEY1"), is(expected1));
 		assertThat(sqlRegistry.findSql("KEY2"), is(expected2));
 		assertThat(sqlRegistry.findSql("KEY3"), is(expected3));
@@ -41,7 +41,7 @@ public abstract class AbstractUpdatableSqlRegistryTest {
 	@Test
 	public void updateSingle() {
 		sqlRegistry.updateSql("KEY2", "Modified2");
-		checkFindResult("SQL1", "Modified2", "SQL3");
+		checkFind("SQL1", "Modified2", "SQL3");
 	}
 
 }
