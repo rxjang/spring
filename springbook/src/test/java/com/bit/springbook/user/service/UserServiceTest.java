@@ -41,6 +41,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
+import com.bit.springbook.TestApplicationContext;
 import com.bit.springbook.user.dao.Level;
 import com.bit.springbook.user.dao.MockUserDao;
 import com.bit.springbook.user.dao.UserDao;
@@ -48,7 +49,7 @@ import com.bit.springbook.user.dao.UserDaoJdbc;
 import com.bit.springbook.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations="/test-applicationContext.xml")
+@ContextConfiguration(classes = TestApplicationContext.class)
 public class UserServiceTest {
 	@Autowired UserService userService;
 	@Autowired UserService testUserService;
@@ -171,7 +172,7 @@ public class UserServiceTest {
 		assertSame(userWithoutLevelRead.getLevel(),Level.BASIC);
 	}
 	
-	static class TestUserService extends UserServiceImpl {
+	public static class TestUserService extends UserServiceImpl {
 		private String id="madnite1";
 		
 		@Override

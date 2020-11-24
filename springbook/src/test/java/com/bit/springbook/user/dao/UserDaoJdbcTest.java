@@ -21,11 +21,11 @@ import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.bit.springbook.TestApplicationContext;
 import com.bit.springbook.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)//스프링의 테스트 컨텍스트 프레임워크의 JUnit확장기능 지정
-@ContextConfiguration(locations = "/test-applicationContext.xml")
-//@DirtiesContext//테스트 메소드에서 애플리케이션 컨텍스트의 구성이나 상태를 변경한다는 것을 테스트 컨택스트 프레임워크에 알려준다.
+@ContextConfiguration(classes = TestApplicationContext.class)
 public class UserDaoJdbcTest {
 	@Autowired
 	UserDaoJdbc dao;
