@@ -11,18 +11,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import com.bit.springbook.user.domain.User;
 import com.bit.springbook.user.sqlService.SqlService;
 
 import lombok.Setter;
 
+@Component("userDao")
 public class UserDaoJdbc implements UserDao{//스프링 빈
 	private JdbcTemplate jdbcTemplate;
-	@Setter
-	private Map<String,String> sqlMap;
 	
 	@Autowired
+	@Setter
 	private SqlService sqlService;
 	
 	

@@ -4,6 +4,7 @@ import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
@@ -30,7 +31,10 @@ import com.mysql.cj.jdbc.Driver;
 @Configuration
 @ImportResource("/test-applicationContext.xml")
 @EnableTransactionManagement
+@ComponentScan(basePackages = "com.bit.springbook.user")
 public class TestApplicationContext {
+	@Autowired UserDao userDao;
+	@Autowired UserService userService;
 	
 	@Bean
 	public DataSource dataSource() {
@@ -51,19 +55,6 @@ public class TestApplicationContext {
 		return tm;
 	}
 	
-	@Bean
-	public UserDao userDao() {
-		return new UserDaoJdbc();
-	}
-	
-	@Bean
-	public UserService userService() {
-		UserServiceImpl service=new UserServiceImpl();
-		service.setUserDao(userDao());
-		service.setMailSender(mailSender());
-		return service;
-	}
-
 	@Bean
 	public MailSender mailSender() {
 		return new DummyMailSender();

@@ -27,8 +27,7 @@ import com.bit.springbook.user.domain.User;
 @RunWith(SpringJUnit4ClassRunner.class)//스프링의 테스트 컨텍스트 프레임워크의 JUnit확장기능 지정
 @ContextConfiguration(classes = TestApplicationContext.class)
 public class UserDaoJdbcTest {
-	@Autowired
-	UserDaoJdbc dao;
+	@Autowired UserDaoJdbc dao;
 	@Autowired DataSource dataSource;
 	
 	private User user0;
@@ -41,11 +40,6 @@ public class UserDaoJdbcTest {
 		this.user0=new User("ruixian0","seohyun0","dksdkffiwna",Level.BASIC,1,0,"rxforp@naver.com");
 		this.user1=new User("ruixian1","seohyun1","dksdkffiwna",Level.SILVER,55,10,"rxforp@naver.com");
 		this.user2=new User("ruixian2","seohyun2","dksdkffiwna",Level.GOLD,100,40,"rxforp@naver.com");
-		
-//		dao=new UserDao();
-//		DataSource dataSource=new SingleConnectionDataSource(
-//				"jdbc:mysql://localhost/testdb?&useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true","spring","book",true);
-//		dao.setDataSource(dataSource);
 		
 		System.out.println(this);
 	}
