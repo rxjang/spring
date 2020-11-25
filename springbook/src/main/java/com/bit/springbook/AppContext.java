@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
@@ -32,6 +33,7 @@ import com.mysql.cj.jdbc.Driver;
 @ImportResource("/test-applicationContext.xml")
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.bit.springbook.user")
+@Import(SqlServiceContext.class)
 public class AppContext {
 	@Autowired UserDao userDao;
 	@Autowired UserService userService;
@@ -55,36 +57,4 @@ public class AppContext {
 		return tm;
 	}
 	
-	@Bean
-	public SqlService sqlService() {
-		OxmSqlService sqlService=new OxmSqlService();
-		sqlService.setUnmarshaller(unmarshaller());
-		sqlService.setSqlRegistry(sqlRegistry());
-		return sqlService;		
-	}
-
-	@Bean
-	public SqlRegistry sqlRegistry() {
-		EmbeddedDbSqlRegistry sqlRegistry=new EmbeddedDbSqlRegistry();
-		sqlRegistry.setDataSource(embeddedDatabase());
-		return sqlRegistry;
-	}
-
-	@Bean
-	public DataSource embeddedDatabase() {
-		return new EmbeddedDatabaseBuilder()
-				.setName("embeddedDatabase")
-				.setType(EmbeddedDatabaseType.HSQL)
-				.addScript(
-					"classpath:com/bit/springbook/user/sqlService/updatable/sqlRegistrySchema.sql")
-				.build();
-	}
-
-	@Bean
-	public Unmarshaller unmarshaller() {
-		Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-		marshaller.setContextPath("com.bit.springbook.user.sqlService.jaxb");
-		return marshaller;
-	}
-
 }
