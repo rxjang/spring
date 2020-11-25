@@ -21,11 +21,12 @@ import org.springframework.jdbc.support.SQLExceptionTranslator;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.bit.springbook.TestApplicationContext;
+import com.bit.springbook.AppContext;
+import com.bit.springbook.TestAppContext;
 import com.bit.springbook.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)//스프링의 테스트 컨텍스트 프레임워크의 JUnit확장기능 지정
-@ContextConfiguration(classes = TestApplicationContext.class)
+@ContextConfiguration(classes = {AppContext.class,TestAppContext.class})
 public class UserDaoJdbcTest {
 	@Autowired UserDaoJdbc dao;
 	@Autowired DataSource dataSource;

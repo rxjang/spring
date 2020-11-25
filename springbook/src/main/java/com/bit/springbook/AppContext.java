@@ -32,7 +32,7 @@ import com.mysql.cj.jdbc.Driver;
 @ImportResource("/test-applicationContext.xml")
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.bit.springbook.user")
-public class TestApplicationContext {
+public class AppContext {
 	@Autowired UserDao userDao;
 	@Autowired UserService userService;
 	
@@ -53,11 +53,6 @@ public class TestApplicationContext {
 		DataSourceTransactionManager tm= new DataSourceTransactionManager();
 		tm.setDataSource(dataSource());
 		return tm;
-	}
-	
-	@Bean
-	public MailSender mailSender() {
-		return new DummyMailSender();
 	}
 	
 	@Bean

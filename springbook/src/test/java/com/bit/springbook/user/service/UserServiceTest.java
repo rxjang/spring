@@ -41,7 +41,7 @@ import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
 
-import com.bit.springbook.TestApplicationContext;
+import com.bit.springbook.AppContext;
 import com.bit.springbook.user.dao.Level;
 import com.bit.springbook.user.dao.MockUserDao;
 import com.bit.springbook.user.dao.UserDao;
@@ -49,7 +49,7 @@ import com.bit.springbook.user.dao.UserDaoJdbc;
 import com.bit.springbook.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestApplicationContext.class)
+@ContextConfiguration(classes = AppContext.class)
 public class UserServiceTest {
 	@Autowired UserService userService;
 	@Autowired UserService testUserService;
