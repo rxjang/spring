@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -20,11 +21,12 @@ public class UserDaoJdbc implements UserDao{//스프링 빈
 	private JdbcTemplate jdbcTemplate;
 	@Setter
 	private Map<String,String> sqlMap;
-	@Setter
+	
+	@Autowired
 	private SqlService sqlService;
 	
 	
-	//새터이면서 JdbcCotnext에 대한 생성,DI작업을 동시에 수행한다.
+	@Autowired
 	public void setDataSource(DataSource dataSource) {
 		this.jdbcTemplate=new JdbcTemplate(dataSource);
 	}
