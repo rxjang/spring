@@ -36,7 +36,7 @@ import com.mysql.cj.jdbc.Driver;
 @ImportResource("/test-applicationContext.xml")
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.bit.springbook.user")
-@Import({SqlServiceContext.class, TestAppContext.class, ProductionAppContext.class})
+@Import(SqlServiceContext.class)
 public class AppContext {
 	@Autowired UserDao userDao;
 	@Autowired UserService userService;
@@ -62,7 +62,7 @@ public class AppContext {
 	
 	@Configuration
 	@Profile("production")
-	public class ProductionAppContext {
+	public static class ProductionAppContext {
 		@Bean
 		public MailSender mailSender() {
 			JavaMailSenderImpl mailSender=new JavaMailSenderImpl();
@@ -70,5 +70,15 @@ public class AppContext {
 			return mailSender;
 		}
 	}
+	
+	@Configuration
+	@Profile("test")
+	public static class TestAppContext {
+		@Bean
+		public MailSender mailSender() {
+			return new DummyMailSender();
+		}
+	}
+
 
 }

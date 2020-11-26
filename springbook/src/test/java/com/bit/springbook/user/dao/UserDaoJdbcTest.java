@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -23,7 +24,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.bit.springbook.AppContext;
-import com.bit.springbook.TestAppContext;
 import com.bit.springbook.user.domain.User;
 
 @RunWith(SpringJUnit4ClassRunner.class)//스프링의 테스트 컨텍스트 프레임워크의 JUnit확장기능 지정
@@ -143,20 +143,6 @@ public class UserDaoJdbcTest {
 		checkSameUser(user1, user1same);
 	}
 	
-//	@Test
-//	public void sqlExceptionTranslate() {
-//		dao.deleteAll();
-//		
-//		try {
-//			dao.add(user0);
-//			dao.add(user0);
-//		}catch(DuplicateKeyException ex) {
-//			SQLException sqlEx=(SQLException) ex.getRootCause();
-//			SQLExceptionTranslator set= new SQLErrorCodeSQLExceptionTranslator(this.dataSource);
-//			assertSame(set.translate(null, null, sqlEx),DuplicateKeyException.class);
-//		}
-//	}//다른 오류 발생해버림 ㅎㅎㅎ
-	
 	public void checkSameUser(User user1,User user2) {
 		assertThat(user1.getId(),is(user2.getId()));
 		assertThat(user1.getName(),is(user2.getName()));
@@ -165,6 +151,15 @@ public class UserDaoJdbcTest {
 		assertThat(user1.getLogin(),is(user2.getLogin()));
 		assertThat(user1.getRecommend(),is(user2.getRecommend()));
 		
+	}
+	
+	@Autowired DefaultListableBeanFactory bf;
+	
+	@Test
+	public void beans() {
+		for(String n: bf.getBeanDefinitionNames()) {
+			System.out.println(n+"\t"+bf.getBean(n).getClass().getName());
+		}
 	}
 
 }
