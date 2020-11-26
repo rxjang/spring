@@ -8,16 +8,19 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.mail.MailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import com.bit.springbook.AppContext.ProductionAppContext;
 import com.bit.springbook.user.dao.UserDao;
 import com.bit.springbook.user.dao.UserDaoJdbc;
 import com.bit.springbook.user.service.DummyMailSender;
@@ -33,7 +36,7 @@ import com.mysql.cj.jdbc.Driver;
 @ImportResource("/test-applicationContext.xml")
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.bit.springbook.user")
-@Import(SqlServiceContext.class)
+@Import({SqlServiceContext.class, TestAppContext.class, ProductionAppContext.class})
 public class AppContext {
 	@Autowired UserDao userDao;
 	@Autowired UserService userService;
@@ -57,4 +60,15 @@ public class AppContext {
 		return tm;
 	}
 	
+	@Configuration
+	@Profile("production")
+	public class ProductionAppContext {
+		@Bean
+		public MailSender mailSender() {
+			JavaMailSenderImpl mailSender=new JavaMailSenderImpl();
+			mailSender.setHost("localhost");
+			return mailSender;
+		}
+	}
+
 }
