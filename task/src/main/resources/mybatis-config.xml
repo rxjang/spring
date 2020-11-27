@@ -9,7 +9,4 @@
 		<typeAlias alias="sus_02Bean" type="task.model.entity.Sus_02Vo"/>
 	</typeAliases>
 	
-	<!-- <mappers>
-		<mapper resource="config/SusMapper.xml" />
-	</mappers> -->
 </configuration>
