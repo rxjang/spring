@@ -8,6 +8,14 @@
 		select * from sus_02
 	</select>
 	
+	<select id="selectOneSus_02" resultType="sus_02Bean">
+		select * from sus_02 where deleted=0 and id=#{id}
+	</select>
+	
+	<select id="selectOneSus_02ByFK" resultType="sus_02Bean">
+		select * from sus_01 where deleted=0 and sus_01_id=#{sus_01_id}
+	</select>
+	
 	<insert id="insetToSus_02" parameterType="sus_02Bean">
 		insert into sus_02 (pname,quantity,info,createtime,category_id,sus_01_id) 
 		values (#{pname},#{quantity},#{info},#{createtime},#{category_id},#{sus_01_id});

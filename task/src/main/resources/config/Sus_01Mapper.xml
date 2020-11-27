@@ -7,6 +7,10 @@
 	<select id="selectSus_01" resultType="sus_01Bean">
 		select * from sus_01 where deleted=0
 	</select>
+	
+	<select id="selectOneSus_01" resultType="sus_01Bean">
+		select * from sus_01 where deleted=0 and id=#{id}
+	</select>
 
 	<insert id="insetToSus_01" parameterType="sus_01Bean">
 		insert into sus_01 (pname,quantity,info,createtime,category_id) 
