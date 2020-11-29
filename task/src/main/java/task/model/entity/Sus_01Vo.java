@@ -5,6 +5,7 @@ import java.sql.Date;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.Setter;
 
 @Setter
@@ -20,5 +21,15 @@ public class Sus_01Vo {
 	private Date updatetime; //상품 정보 업데이트 시각
 	private String category; //상품의 카테고리 이름
 	private int deleted; //상품의 삭제 여부
+	
+	public Sus_01Vo( String pname, int quantity, String info, Date createtime, String category) {
+		super();
+		this.pname = pname;
+		this.quantity = quantity;
+		this.info = info;
+		this.createtime = createtime;
+		this.category = category;
+	}
+	
 	
 }

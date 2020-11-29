@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,14 +15,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import task.model.entity.Sus_01Vo;
 import task.model.entity.Sus_02Vo;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(value = "classpath:/applicationContext.xml")
+@Transactional
 public class SusServiceTest {
 
 	@Autowired SqlSession sqlSession;
@@ -33,8 +37,8 @@ public class SusServiceTest {
 	@Before
 	public void setUp() {
 		sus_01List=Arrays.asList(
-				new Sus_01Vo(1,"01a",1,"info-a",Date.valueOf("2020-11-29"),Date.valueOf(""),"a",0),
-				new Sus_01Vo(2,"01b",1,"info-b",Date.valueOf("2020-11-29"),Date.valueOf(""),"b",0)
+				new Sus_01Vo("01a",1,"info-a",Date.valueOf("2020-11-29"),"a"),
+				new Sus_01Vo("01b",1,"info-b",Date.valueOf("2020-11-29"),"b")
 				);
 	}
 	
@@ -45,8 +49,10 @@ public class SusServiceTest {
 	
 	@Test
 	public void testgetAllSus_01() {
+		susService.add(sus_01List.get(0));
 		List<Sus_01Vo> list=susService.getAllSus_01();
-		assertThat(list.size(),is(2));
+		System.out.println(list.size());
+		assertThat(list.get(0).getId(),is(1));
 	}
 	
 	
