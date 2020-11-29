@@ -9,7 +9,7 @@ public interface SusService {
 	
 	Sus_01Vo getOneSus_01(int id); //sus_01점포의 한 상품을 조회합니다.
 
-	Sus_02Vo getOneSus_02(int id); //sus_01점포의 한 상품을 조회합니다.
+	Sus_02Vo getOneSus_02(int id); //sus_02점포의 한 상품을 조회합니다.
 	
 	List<Sus_01Vo> getAllSus_01(); //sus_01의 모든 상품을 조회합니다.
 

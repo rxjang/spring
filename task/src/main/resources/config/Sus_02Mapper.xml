@@ -17,13 +17,13 @@
 	</select>
 	
 	<insert id="insetToSus_02" parameterType="sus_02Bean">
-		insert into sus_02 (pname,quantity,info,createtime,category_id,sus_01_id) 
-		values (#{pname},#{quantity},#{info},#{createtime},#{category_id},#{sus_01_id});
+		insert into sus_02 (pname,quantity,info,createtime,category,sus_01_id) 
+		values (#{pname},#{quantity},#{info},#{createtime},#{category},#{sus_01_id});
 	</insert>
 
 	<update id="updateSus_02" parameterType="sus_02Bean">
 		update sus_02 set pname=#{pname}, quantity=#{quantity}, info=#{info}, updatetime=#{updatetime},
-		category_id=#{category_id} where id=#{id} and deleted=0;
+		category=#{category} where id=#{id} and deleted=0;
 	</update>
 	
 	<update id="deleteSus_02" parameterType="_int">

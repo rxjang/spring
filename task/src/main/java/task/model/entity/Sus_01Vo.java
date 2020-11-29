@@ -18,7 +18,7 @@ public class Sus_01Vo {
 	private String info; //상품 정보
 	private Date createtime; //상품 생성 시각
 	private Date updatetime; //상품 정보 업데이트 시각
-	private int category_id; //상품의 카테고리 번호
+	private String category; //상품의 카테고리 이름
 	private int deleted; //상품의 삭제 여부
 	
 }
