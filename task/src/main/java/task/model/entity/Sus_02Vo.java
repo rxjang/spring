@@ -21,4 +21,16 @@ public class Sus_02Vo {
 	private String category; //상품의 카테고리 이름
 	private int sus_01_id; //sus_01점포의 상품 번호
 	private int deleted; //상품의 삭제 여부
+	
+	public Sus_02Vo(int id,String pname, int quantity, String info, Date createtime, String category) {
+		super();
+		this.id=id;
+		this.pname = pname;
+		this.quantity = quantity;
+		this.info = info;
+		this.createtime = createtime;
+		this.category = category;
+	}
+
+
 }

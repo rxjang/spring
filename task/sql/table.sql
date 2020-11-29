@@ -1,5 +1,5 @@
 CREATE TABLE `task`.`sus_01` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL,
   `pname` VARCHAR(100) NOT NULL,
   `quantity` INT NOT NULL DEFAULT 0,
   `info` VARCHAR(1000) NULL,
@@ -10,7 +10,7 @@ CREATE TABLE `task`.`sus_01` (
   PRIMARY KEY (`id`));
     
 CREATE TABLE `task`.`sus_02` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id` INT NOT NULL,
   `pname` VARCHAR(100) NOT NULL,
   `quantity` INT NOT NULL DEFAULT 0,
   `info` VARCHAR(1000) NULL,

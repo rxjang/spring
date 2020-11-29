@@ -13,12 +13,16 @@
 	</select>
 	
 	<select id="selectOneSus_02ByFK" resultType="sus_02Bean">
-		select * from sus_01 where deleted=0 and sus_01_id=#{sus_01_id}
+		select * from sus_02 where deleted=0 and sus_01_id=#{sus_01_id}
+	</select>
+	
+	<select id="selectLastId" resultType="_int">
+		select id from sus_02 where deleted=0 order by id desc limit 1
 	</select>
 	
 	<insert id="insetToSus_02" parameterType="sus_02Bean">
-		insert into sus_02 (pname,quantity,info,createtime,category,sus_01_id) 
-		values (#{pname},#{quantity},#{info},#{createtime},#{category},#{sus_01_id});
+		insert into sus_02 (id,pname,quantity,info,createtime,category,sus_01_id) 
+		values (#{id},#{pname},#{quantity},#{info},#{createtime},#{category},#{sus_01_id});
 	</insert>
 
 	<update id="updateSus_02" parameterType="sus_02Bean">

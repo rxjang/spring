@@ -13,8 +13,8 @@
 	</select>
 
 	<insert id="insetToSus_01" parameterType="sus_01Bean">
-		insert into sus_01 (pname,quantity,info,createtime,category) 
-		values (#{pname},#{quantity},#{info},#{createtime},#{category});
+		insert into sus_01 (id,pname,quantity,info,createtime,category) 
+		values (#{id},#{pname},#{quantity},#{info},#{createtime},#{category});
 	</insert>
 	
 	<update id="updateSus_01" parameterType="sus_01Bean">

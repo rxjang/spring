@@ -17,11 +17,11 @@ public interface Sus_02Dao {
 	Sus_02Vo selectOneSus_02ByFK(int sus_01_id) throws DataAccessException;
 	//sus_01점포의 id를 사용하여 검색
 	
+	int selectLastId() throws DataAccessException;
+	//가장 마지막 아이디 조회
+	
 	void insetToSus_02(Sus_02Vo bean) throws DataAccessException;
 	//상품 입력
-	
-	void insetToSus_02(Sus_01Vo bean,int sus_01_id) throws DataAccessException;
-	//sus_01테이블에 상품 입력시 상품 입력
 	
 	void updateSus_02(Sus_02Vo bean) throws DataAccessException;
 	//상품 정보 업데이트

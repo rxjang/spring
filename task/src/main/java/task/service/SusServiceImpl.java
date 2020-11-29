@@ -37,12 +37,28 @@ public class SusServiceImpl implements SusService {
 		return sus_02Dao.selectSus_02();
 	}
 
+	/************************요구사항 1번 실행 함수*****************************/
 	public void add(Sus_01Vo sus_01Vo) {
 		Sus_01Dao sus_01Dao=sqlSession.getMapper(Sus_01Dao.class);
 		Sus_02Dao sus_02Dao=sqlSession.getMapper(Sus_02Dao.class);
 		sus_01Dao.insetToSus_01(sus_01Vo);
-//		int sus_01_id=sus_01Vo.getId();
-//		sus_02Dao.insetToSus_02(sus_01Vo,sus_01_id);
+		//sus_01점포에 상품 입
+		Sus_02Vo sus_02Vo=new Sus_02Vo();
+		int sus_02Id;
+		if(sus_02Dao.selectSus_02().size()==0) {
+			sus_02Id=1;
+		}else {
+			sus_02Id=sus_02Dao.selectLastId()+1;
+		}
+		//id 삽입을 위해 마지막 id값 계산
+		sus_02Vo.setId(sus_02Id);
+		sus_02Vo.setPname(sus_01Vo.getPname());
+		sus_02Vo.setQuantity(sus_01Vo.getQuantity());
+		sus_02Vo.setCreatetime(sus_01Vo.getCreatetime());
+		sus_02Vo.setInfo(sus_01Vo.getInfo());
+		sus_02Vo.setCategory(sus_01Vo.getCategory());
+		sus_02Vo.setSus_01_id(sus_01Vo.getId());
+		sus_02Dao.insetToSus_02(sus_02Vo);
 		//sus_01점포에 새 상품을 등록시,sus_02점포에도 등록되게 한다
 	}
 
@@ -51,12 +67,15 @@ public class SusServiceImpl implements SusService {
 		sus_02Dao.insetToSus_02(sus_02Vo);
 	}
 
+	/************************요구사항 2번 실행 함수*****************************/
 	public void update(Sus_01Vo sus_01Vo) {
 		Sus_01Dao sus_01Dao=sqlSession.getMapper(Sus_01Dao.class);
 		Sus_02Dao sus_02Dao=sqlSession.getMapper(Sus_02Dao.class);
 		sus_01Dao.updateSus_01(sus_01Vo);
 		Sus_02Vo sus_02Vo= sus_02Dao.selectOneSus_02ByFK(sus_01Vo.getId());
+		//업데이트 된 sus_01점포의 상품의 아이디를 사용하여 sus_02점포의 같은 상품 아이디 조회
 		sus_01Vo.setId(sus_02Vo.getId());
+		//업데이트 될 정보 중, id를 sus_02점포의 id로 바꿔 해당 상품 정보 업데이트
 		sus_02Dao.updateSus_02(sus_01Vo);
 	}
 
