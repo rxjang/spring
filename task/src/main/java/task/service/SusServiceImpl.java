@@ -42,7 +42,7 @@ public class SusServiceImpl implements SusService {
 		Sus_01Dao sus_01Dao=sqlSession.getMapper(Sus_01Dao.class);
 		Sus_02Dao sus_02Dao=sqlSession.getMapper(Sus_02Dao.class);
 		sus_01Dao.insetToSus_01(sus_01Vo);
-		//sus_01점포에 상품 입
+		//sus_01점포에 상품 입력
 		Sus_02Vo sus_02Vo=new Sus_02Vo();
 		int sus_02Id;
 		if(sus_02Dao.selectSus_02().size()==0) {
