@@ -29,9 +29,9 @@ import com.mysql.cj.jdbc.Driver;
 
 @Configuration
 @ImportResource("/test-applicationContext.xml")
+@EnableSqlService
 @EnableTransactionManagement
 @ComponentScan(basePackages = "com.bit.springbook.user")
-@Import(SqlServiceContext.class)
 @PropertySource("/database.properties")
 public class AppContext implements SqlMapConfig{
 	@Value("${db.driverClass}") Class<?extends Driver> driverClass;
