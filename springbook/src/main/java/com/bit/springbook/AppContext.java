@@ -13,6 +13,8 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 import org.springframework.mail.MailSender;
@@ -31,7 +33,7 @@ import com.mysql.cj.jdbc.Driver;
 @ComponentScan(basePackages = "com.bit.springbook.user")
 @Import(SqlServiceContext.class)
 @PropertySource("/database.properties")
-public class AppContext {
+public class AppContext implements SqlMapConfig{
 	@Value("${db.driverClass}") Class<?extends Driver> driverClass;
 	@Value("${db.url}") String url;
 	@Value("${db.username}") String username;
@@ -81,5 +83,9 @@ public class AppContext {
 		}
 	}
 
+	@Override
+	public Resource getSqlMapResource() {
+		return new ClassPathResource("sqlmap.xml",UserDao.class);
+	}
 
 }

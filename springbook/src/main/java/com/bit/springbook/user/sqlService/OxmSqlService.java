@@ -54,7 +54,7 @@ public class OxmSqlService implements SqlService {
 	private class OxmSqlReader implements SqlReader{
 		//private 멤버 클래스로 정의한다. 톱레벨 클래스인 OxmSqlService만이 사용할 수 있다.
 		@Setter
-		private Resource sqlmap=new ClassPathResource("sqlmap.xml",UserDao.class);
+		private Resource sqlmap=new ClassPathResource("/sqlmap.xml");
 		@Setter
 		private Unmarshaller unmarshaller;
 		

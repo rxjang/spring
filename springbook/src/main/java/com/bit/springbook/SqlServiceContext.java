@@ -2,13 +2,16 @@ package com.bit.springbook;
 
 import javax.sql.DataSource;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.oxm.Unmarshaller;
 import org.springframework.oxm.jaxb.Jaxb2Marshaller;
 
+import com.bit.springbook.user.dao.UserDao;
 import com.bit.springbook.user.sqlService.OxmSqlService;
 import com.bit.springbook.user.sqlService.SqlRegistry;
 import com.bit.springbook.user.sqlService.SqlService;
@@ -16,11 +19,15 @@ import com.bit.springbook.user.sqlService.updatable.EmbeddedDbSqlRegistry;
 
 @Configuration
 public class SqlServiceContext {
+	
+	@Autowired SqlMapConfig sqlMapConfig;
+	
 	@Bean
 	public SqlService sqlService() {
 		OxmSqlService sqlService=new OxmSqlService();
 		sqlService.setUnmarshaller(unmarshaller());
 		sqlService.setSqlRegistry(sqlRegistry());
+		sqlService.setSqlmap(this.sqlMapConfig.getSqlMapResource());
 		return sqlService;		
 	}
 
