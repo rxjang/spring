@@ -1,10 +1,12 @@
 package org.zerock;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -70,11 +72,25 @@ class Boot03ApplicationTests {
 		results.forEach(board -> System.out.println(board));
 	}
 
+//	@Test
+//	public void testbnoPagingSort() {
+//		Pageable paging=PageRequest.of(0, 10, Sort.Direction.ASC,"bno");
+//		Collection<Board> results=boardRepository.findByBnoGreaterThan(0L, paging);
+//		results.forEach(board -> System.out.println(board));
+//	}
+	
 	@Test
-	public void testbnoPagingSort() {
+	public void testBnoPagingSort() {
 		Pageable paging=PageRequest.of(0, 10, Sort.Direction.ASC,"bno");
-		Collection<Board> results=boardRepository.findByBnoGreaterThan(0L, paging);
-		results.forEach(board -> System.out.println(board));
+		Page<Board> result=boardRepository.findByBnoGreaterThan(0L, paging);
+		System.out.println("PAGE SIZE: " +result.getSize());
+		System.out.println("TOTAL PAGES: " +result.getTotalPages());
+		System.out.println("TOTAL COUNT: " +result.getTotalElements());
+		System.out.println("NEXT: " +result.nextPageable());
+		
+		List<Board> list=result.getContent();
+		list.forEach(board->System.out.println(board));
+		
 	}
 	
 }
