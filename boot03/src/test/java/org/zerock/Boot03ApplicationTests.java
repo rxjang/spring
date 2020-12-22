@@ -1,5 +1,6 @@
 package org.zerock;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,6 +34,11 @@ class Boot03ApplicationTests {
 	@Test
 	public void testByTitle() {
 		boardRepository.findBoardByTitle("제목..177").forEach(board -> System.out.println(board));
+	}
+	
+	@Test
+	public void testByTitle2() {
+		boardRepository.findByTitle("17").forEach(board -> System.out.println(board));
 	}
 
 	@Test
@@ -91,6 +97,32 @@ class Boot03ApplicationTests {
 		List<Board> list=result.getContent();
 		list.forEach(board->System.out.println(board));
 		
+	}
+	
+	@Test
+	public void testFindContent() {
+		boardRepository.findByContent("71").forEach(board -> System.out.println(board));
+	}
+	
+	@Test
+	public void testFindByWriter2() {
+		boardRepository.findByWriter2("04").forEach(board -> System.out.println(board));
+	}
+	
+	@Test
+	public void testByTitle17(){
+		boardRepository.findByTitle2("17").forEach(arr -> System.out.println(Arrays.toString(arr)));
+	}
+	
+	@Test
+	public void testFindByTitle3() {
+		boardRepository.findByTitle3("17").forEach(board -> System.out.println(Arrays.toString(board)));
+	}
+	
+	@Test
+	public void testByPaging() {
+		Pageable pageable = PageRequest.of(0,10);
+		boardRepository.findByPage(pageable).forEach(board -> System.out.println(board));
 	}
 	
 }
