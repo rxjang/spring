@@ -8,7 +8,11 @@ import org.zerock.domain.Member;
 
 public interface MemberRepository extends CrudRepository<Member, Long> {
 
-	@Query("Select m.uid, count(p) From Member m LEFT OUTER JOIN profile p on"
-			+ "m.uid = p.member where m.uid = ?1 group by m")
+	@Query("SELECT m.uid, count(p) FROM Member m LEFT OUTER JOIN Profile p ON"
+			+ " m.uid = p.member where m.uid = ?1 GROUP BY m")
 	public List<Object[]> getMemberWithProfileCount(String uid);
+	
+	@Query("SELECT m, p FROM Member m LEFT OUTER JOIN Profile p "
+			+ "ON m.uid=p.member WHERE m.uid = ?1 AND p.current = true")
+	public List<Object[]> getMemberWithProfile(String uid);
 }

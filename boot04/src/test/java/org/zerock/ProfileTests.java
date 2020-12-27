@@ -60,4 +60,12 @@ public class ProfileTests {
 		
 		result.forEach(arr -> System.out.println(Arrays.toString(arr)));
 	}
+	
+	@Test
+	public void testFetchJoin2() {
+		
+		List<Object[]> result = memberRepo.getMemberWithProfile("user1");
+		
+		result.forEach(arr -> System.out.println(Arrays.toString(arr)));
+	}
 }
