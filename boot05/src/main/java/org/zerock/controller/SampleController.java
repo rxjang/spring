@@ -1,6 +1,9 @@
 package org.zerock.controller;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,5 +26,17 @@ public class SampleController {
 		MemberVO vo = new MemberVO(123, "u00", "p00", "홍길동", new Timestamp(System.currentTimeMillis()));
 		
 		model.addAttribute("vo",vo);
+	}
+	
+	@GetMapping("/sample3")
+	public void sample3(Model model) {
+		List<MemberVO> list = new ArrayList<>();
+		
+		for(int i =0 ; i <10 ; i++) {
+			
+			list.add(new MemberVO(123, "u0"+i , "p0"+i, "홍길동" +i, new Timestamp(System.currentTimeMillis())));
+			
+			model.addAttribute("list",list);
+		}
 	}
 }

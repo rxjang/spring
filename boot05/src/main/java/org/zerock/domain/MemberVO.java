@@ -14,17 +14,6 @@ public class MemberVO {
 	private String mpw;
 	private String mname;
 	private Timestamp regdate;
-	
-	
-	public MemberVO(int mno, String mid, String mpw, String mname, Timestamp regdate) {
-		super();
-		this.mno = mno;
-		this.mid = mid;
-		this.mpw = mpw;
-		this.mname = mname;
-		this.regdate = regdate;
-	}
-	
-	
+
 	
 }
