@@ -2,6 +2,8 @@ package org.zerock.controller;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -68,7 +70,7 @@ public class SampleController {
 	@GetMapping("/sample6")
 	public void sample6(Model model) {
 		
-List<MemberVO> list = new ArrayList<>();
+		List<MemberVO> list = new ArrayList<>();
 		
 		for(int i =0 ; i <10 ; i++) {
 			
@@ -80,5 +82,16 @@ List<MemberVO> list = new ArrayList<>();
 			
 			model.addAttribute("result",result);
 		}
+	}
+	
+
+	@GetMapping("/sample7")
+	public void sample7(Model model) {
+		
+		model.addAttribute("now", new Date());
+		model.addAttribute("price", 123456789 );
+		model.addAttribute("title", "This is a  just sample." );
+		model.addAttribute("options", Arrays.asList("AAAA", "BBB", "CCC", "DDD"));
+	
 	}
 }
