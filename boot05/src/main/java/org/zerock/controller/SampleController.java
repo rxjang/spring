@@ -99,4 +99,9 @@ public class SampleController {
 	public void sample8(Model model) {
 		
 	}
+	
+	@GetMapping("/sample/hello")
+	public void hello() {
+		
+	}
 }
