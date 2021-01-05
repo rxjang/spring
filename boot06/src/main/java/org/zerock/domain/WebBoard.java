@@ -28,6 +28,7 @@ public class WebBoard {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long bno;
 	private String title;
+	private String writer;
 	private String content;
 	
 	@CreationTimestamp 
