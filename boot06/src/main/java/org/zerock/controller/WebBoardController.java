@@ -90,4 +90,28 @@ public class WebBoardController {
 		
 		return "redirect:/boards/list";
 	}
+	
+	
+	@PostMapping("/modify")
+	public String modifyPost(WebBoard board, PageVO vo, RedirectAttributes rttr) {
+		
+		log.info("Modify WebBoard: " + board);
+		
+		repo.findById(board.getBno()).ifPresent(origin -> {
+			origin.setTitle(board.getTitle());
+			origin.setContent(board.getContent());
+			
+			repo.save(origin);
+			rttr.addFlashAttribute("msg","success");
+			rttr.addAttribute("bno", origin.getBno());
+		});
+		
+		//페이징과 검색했던 결과로 이동하는 경우
+		rttr.addAttribute("page", vo.getPage());
+		rttr.addAttribute("size", vo.getSize());
+		rttr.addAttribute("type", vo.getType());
+		rttr.addAttribute("keyword", vo.getKeyword());
+		
+		return "redirect:/boards/view";
+	}
 }
