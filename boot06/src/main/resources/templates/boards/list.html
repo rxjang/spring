@@ -114,6 +114,18 @@ $(document).ready(function() {
 			var stateObj={msg:''};
 		}
 	});
+	
+	$(".baordLink").click(function(e){
+		
+		e.preventDefault();
+		
+		var boardNo = $(this).attr("href");
+		
+		formObj.attr("action",[[@{'/boards/view'}]]);
+		formObj.append("<input type='hidden' name='bno' value='"+boradNo+"'>");
+		
+		formObj.submit();
+	});
 });
 
 </script>
