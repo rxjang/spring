@@ -26,6 +26,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 		http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
 		
 		http.formLogin().loginPage("/login");
+		
+		http.exceptionHandling().accessDeniedPage("/accessDenied");
+		
+		//세션 무효화 
+		http.logout().logoutUrl("/logout").invalidateHttpSession(true);
 	}
 	
 	@Autowired
