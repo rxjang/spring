@@ -33,28 +33,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 		log.info("Security config...........");
 		
-		http.authorizeRequests().antMatchers("/guest/**").permitAll();
-		
-		http.authorizeRequests().antMatchers("/manager/**").hasRole("MANAGER");
-		
-		http.authorizeRequests().antMatchers("/admin/**").hasRole("ADMIN");
+		http.authorizeRequests()
+		.antMatchers("boards/list").permitAll()
+		.antMatchers("/boards/register")
+		.hasAnyRole("BASIC", "MANAGER", "ADMIN");
 		
 		http.formLogin().loginPage("/login");
 		
 		http.exceptionHandling().accessDeniedPage("/accessDenied");
 		
-		//세션 무효화 
 		http.logout().logoutUrl("/logout").invalidateHttpSession(true);
-		
-//		http.userDetailsService(zerockUserService);
 		
 		http.rememberMe()
 		.key("zerock")
 		.userDetailsService(zerockUserService)
 		.tokenRepository(getJDBCRepository())
 		.tokenValiditySeconds(60*60*24);
-		
-		//초단위 ->  24시간 유지 
 	}
 	
 	@Autowired
