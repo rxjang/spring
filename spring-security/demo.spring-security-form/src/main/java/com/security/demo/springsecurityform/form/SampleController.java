@@ -2,12 +2,16 @@ package com.security.demo.springsecurityform.form;
 
 import com.security.demo.springsecurityform.account.AccountContext;
 import com.security.demo.springsecurityform.account.AccountRepository;
+import com.security.demo.springsecurityform.config.SecurityLogger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
+import java.util.concurrent.Callable;
 
 @Controller
 public class SampleController {
@@ -54,5 +58,21 @@ public class SampleController {
         model.addAttribute("message", "Hello user, " + principal.getName());
 
         return "user";
+    }
+
+    @GetMapping("/async-handler")
+    @ResponseBody
+    public Callable<String> asyncHandler() {
+
+        // Tomacat 이 할당해준 쓰레드
+        SecurityLogger.log("MVC");
+        return new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                    //callable 내의 쓰레드
+                SecurityLogger.log("Callable");
+                return "Async Handler";
+            }
+        };
     }
 }

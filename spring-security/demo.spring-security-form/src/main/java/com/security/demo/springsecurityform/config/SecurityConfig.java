@@ -39,8 +39,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-//        web.ignoring().mvcMatchers("favicon.ico");
+//        web.ignoring().mvcMatchers("favicon.ico");리
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
+        // 동적으로 거르는 것은 추천하지 X => 루트 페이지는 모든 사용자함( 인증 O, 인증 X) 접속 가능 => 필터를 타야 함리
+        // 정적인 resource 위주로 처리 => 예외적인 정적 자원만 http.authorizedRequest 에서 처리
     }
 
     @Override
@@ -49,6 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/", "/info", "/account/**").permitAll()
                 .mvcMatchers("/admin").hasRole("ADMIN")
                 .mvcMatchers("/user").hasRole("USER")
+//                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .anyRequest().authenticated()
                 .expressionHandler(expressionHandler());
 //                .accessDecisionManager(accessDecisionManager());
