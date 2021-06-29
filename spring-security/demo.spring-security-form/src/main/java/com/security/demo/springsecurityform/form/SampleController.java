@@ -1,10 +1,8 @@
 package com.security.demo.springsecurityform.form;
 
-import com.security.demo.springsecurityform.account.AccountContext;
 import com.security.demo.springsecurityform.account.AccountRepository;
-import com.security.demo.springsecurityform.config.SecurityLogger;
+import com.security.demo.springsecurityform.common.SecurityLogger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,5 +72,16 @@ public class SampleController {
                 return "Async Handler";
             }
         };
+    }
+
+    @GetMapping("/async-service")
+    @ResponseBody
+    public String asyncService() {
+
+        SecurityLogger.log("MVC, before async Service");
+        sampleService.asyncService();
+        SecurityLogger.log("MVC, after async Service");
+
+        return "Async Service";
     }
 }

@@ -1,7 +1,7 @@
 package com.security.demo.springsecurityform.form;
 
-import com.security.demo.springsecurityform.account.Account;
-import com.security.demo.springsecurityform.account.AccountContext;
+import com.security.demo.springsecurityform.common.SecurityLogger;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,5 +16,12 @@ public class SampleService {
         System.out.println("================");
         System.out.println(authentication);
         System.out.println(userDetails.getUsername());
+    }
+
+    @Async
+    public void asyncService() {
+        // @Async가 사용된 곳에는 security context 정보 공유 불가
+        SecurityLogger.log("Async Service");
+        System.out.println("Async service is called");
     }
 }

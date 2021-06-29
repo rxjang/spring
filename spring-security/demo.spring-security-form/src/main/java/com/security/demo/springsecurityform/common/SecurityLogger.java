@@ -1,4 +1,4 @@
-package com.security.demo.springsecurityform.config;
+package com.security.demo.springsecurityform.common;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 
