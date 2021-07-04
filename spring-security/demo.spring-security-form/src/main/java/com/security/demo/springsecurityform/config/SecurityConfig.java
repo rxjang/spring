@@ -2,14 +2,24 @@ package com.security.demo.springsecurityform.config;
 
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @Configuration
 @EnableWebSecurity
@@ -51,7 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .mvcMatchers("/", "/signup", "/info", "/account/**").permitAll()
                 .mvcMatchers("/admin").hasRole("ADMIN")
-                .mvcMatchers("/user").hasRole("USER")
+                // hasAuthority 사용시 ROLE_ 접두사 필요 
+                .mvcMatchers("/user").hasAuthority("ROLE_USER")
 //                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .anyRequest().authenticated()
                 .expressionHandler(expressionHandler());
@@ -60,6 +71,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic();
 
         http.logout().logoutSuccessUrl("/");
+
+        http.anonymous().principal("anonymousUser");
+
+        http.sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)   // REST API 사용시 전략
+                .maximumSessions(1)
+                    .maxSessionsPreventsLogin(true);
+
+        // TODO ExceptionTranslatorFilter -> FilterSecurityInterceptor (AccessDecisionManager, AffirmativeBased)
+        // TODO AuthenticationException -> AuthenticationEntryPoint
+        // TODO AccessDeniedException -> AccessDeniedHandler(403)
+
+        http.exceptionHandling().
+                accessDeniedHandler((httpServletRequest, httpServletResponse, e) -> {
+                    // 별도의 클래스로 빼는 것이 좋음
+                    UserDetails principal = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                    String username = principal.getUsername();
+                    System.out.println(username + " is denied to access "+ httpServletRequest.getRequestURI());
+                    httpServletResponse.sendRedirect("/access-denied");
+                });
 
         // 현재 쓰레드에서 생성 되는 하위 쓰레드로 security context 공유
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
