@@ -1,29 +1,27 @@
 package com.security.demo.springsecurityform.config;
 
+import com.security.demo.springsecurityform.account.AccountService;
+import com.security.demo.springsecurityform.common.LoggingFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.expression.SecurityExpressionHandler;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    AccountService accountService;
 
 //    public AccessDecisionManager accessDecisionManager() {
 //        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
@@ -50,6 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
+
 //        web.ignoring().mvcMatchers("favicon.ico");리
         web.ignoring().requestMatchers(PathRequest.toStaticResources().atCommonLocations());
         // 동적으로 거르는 것은 추천하지 X => 루트 페이지는 모든 사용자함( 인증 O, 인증 X) 접속 가능 => 필터를 타야 함리
@@ -58,10 +57,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.addFilterBefore(new LoggingFilter(), WebAsyncManagerIntegrationFilter.class);
+
         http.authorizeRequests()
                 .mvcMatchers("/", "/signup", "/info", "/account/**").permitAll()
                 .mvcMatchers("/admin").hasRole("ADMIN")
-                // hasAuthority 사용시 ROLE_ 접두사 필요 
+                // hasAuthority 사용시 ROLE_ 접두사 필요
                 .mvcMatchers("/user").hasAuthority("ROLE_USER")
 //                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 .anyRequest().authenticated()
@@ -69,6 +70,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .accessDecisionManager(accessDecisionManager());
         http.formLogin().loginPage("/login").permitAll();
         http.httpBasic();
+
+        http.rememberMe()
+                .userDetailsService(accountService)
+                .key("remember-me-sample");
 
         http.logout().logoutSuccessUrl("/");
 
