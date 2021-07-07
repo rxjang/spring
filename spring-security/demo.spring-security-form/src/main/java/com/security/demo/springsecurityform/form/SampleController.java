@@ -3,6 +3,7 @@ package com.security.demo.springsecurityform.form;
 import com.security.demo.springsecurityform.account.Account;
 import com.security.demo.springsecurityform.account.AccountRepository;
 import com.security.demo.springsecurityform.account.UserAccount;
+import com.security.demo.springsecurityform.book.BookRepository;
 import com.security.demo.springsecurityform.common.CurrentUser;
 import com.security.demo.springsecurityform.common.SecurityLogger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +26,16 @@ public class SampleController {
     @Autowired
     AccountRepository accountRepository;
 
+    @Autowired
+    BookRepository bookRepository;
+
     @GetMapping("/")
     public String index(Model model, @CurrentUser Account account) {
         if (account == null) {
             model.addAttribute("message", "Hello Spring Security");
         } else {
-            model.addAttribute("message", "Hello, " +
-                    account.getUsername());
+            System.out.println("===============" + account.getId());
+            model.addAttribute("message", "Hello, " + account.getUsername());
         }
         return "index";
     }
@@ -60,6 +64,7 @@ public class SampleController {
     @GetMapping("/user")
     public String user(Model model, Principal principal) {
         model.addAttribute("message", "Hello user, " + principal.getName());
+        model.addAttribute("books", bookRepository.findCurrentUserBooks());
 
         return "user";
     }
