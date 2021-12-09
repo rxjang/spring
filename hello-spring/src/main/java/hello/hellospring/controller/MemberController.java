@@ -17,6 +17,7 @@ public class MemberController {
 
     @Autowired
     public MemberController(MemberService memberService) {
+        System.out.println("memberService = " + memberService.getClass());
         this.memberService = memberService;
     }
 
