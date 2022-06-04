@@ -23,7 +23,7 @@ class SampleControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string("Hello World"))
                 .andReturn();
-        
+
         System.out.println(result.getResponse().getContentAsString());
     }
 }
