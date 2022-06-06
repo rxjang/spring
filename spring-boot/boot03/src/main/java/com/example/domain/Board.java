@@ -1,6 +1,9 @@
 package com.example.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,8 +19,11 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @ToString
+@Builder
 @Entity
 @Table(name = "tbl_boards")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Board {
 
     @Id
