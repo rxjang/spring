@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="ko">
+<!--<html xmlns:th="http://www.thymeleaf.org">-->
+<head>
+    <meta charset="UTF-8" content="text/html">
+    <title>Title</title>
+</head>
+<body>
+    <h1 th:text="${vo}">Test page</h1>
+
+    <div th:utext='${"<h3>" + vo.mid + "</h3>"}'></div>
+    <div th:text='${"<h3>" + vo.mid + "</h3>"}'></div>
+</body>
+</html>
