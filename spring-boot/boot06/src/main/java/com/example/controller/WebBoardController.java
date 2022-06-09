@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.domain.WebBoard;
+import com.example.persistence.CustomCrudRepository;
 import com.example.persistence.WebBoardRepository;
 import com.example.vo.PageMaker;
 import com.example.vo.PageVO;
@@ -22,14 +23,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequiredArgsConstructor
 public class WebBoardController {
 
-    private final WebBoardRepository webBoardRepository;
+    private final CustomCrudRepository webBoardRepository;
+//    private final WebBoardRepository webBoardRepository;
 
     @GetMapping("/list")
     public void list(PageVO vo, Model model) {
 
         Pageable page = vo.makePageable(0, "bno");
 
-        Page<WebBoard> result = webBoardRepository.findAll(webBoardRepository.makePredicate(vo.getType(), vo.getKeyword()), page);
+//        Page<WebBoard> result = webBoardRepository.findAll(webBoardRepository.makePredicate(vo.getType(), vo.getKeyword()), page);
+        Page<Object[]> result = webBoardRepository.getCustomPage(vo.getType(), vo.getKeyword(), page);
 
         log.info("{}", page);
         log.info("{}", result);
