@@ -1,5 +1,6 @@
 package com.example.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,35 +13,34 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.sql.Timestamp;
-import java.util.List;
 
 @Getter
 @Setter
-@ToString(exclude = "replies")
+@ToString(exclude = "baord")
 @Entity
-@Table(name = "tbl_webboards")
-@EqualsAndHashCode(of = "bno")
-public class WebBoard {
+@Table(name = "tbl_webreplies")
+@EqualsAndHashCode(of = "rno")
+public class WebReply {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long bno;
+    private Long rno;
 
-    private String title;
+    private String replyText;
 
-    private String writer;
+    private String replyer;
 
-    private String content;
-
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
-    private List<WebReply> replies;
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    private WebBoard board;
 
     @CreationTimestamp
     private Timestamp regdate;
 
     @UpdateTimestamp
     private Timestamp updatedate;
+
 }
