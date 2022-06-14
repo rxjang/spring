@@ -7,9 +7,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.Commit;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @SpringBootTest
@@ -19,6 +22,9 @@ public class MemberTest {
 
     @Autowired
     MemberRepository memberRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Test
     void testInsert() {
@@ -47,5 +53,19 @@ public class MemberTest {
         Optional<Member> result = memberRepository.findById("user85");
 
         result.ifPresent(member -> log.info("member {}", member));
+    }
+
+    @Test
+    void testUpdateOldMember() {
+        List<String> ids = new ArrayList<>();
+
+        for (int i = 0; i <= 100; i++) {
+            ids.add("user" + i);
+        }
+
+        memberRepository.findAllById(ids).forEach(m -> {
+            m.setUpw(passwordEncoder.encode(m.getUpw()));
+            memberRepository.save(m);
+        });
     }
 }
