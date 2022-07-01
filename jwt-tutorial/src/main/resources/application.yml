@@ -24,3 +24,9 @@ spring:
 logging:
   level:
     com.example: DEBUG
+
+jwt:
+  header: Authorization
+  #echo 'coding-study-spring-boot-jwt-tutorial-secret-silvernine-tech-spring-boot-jwt-tutorial-secret'|base64
+  secret: Y29kaW5nLXN0dWR5LXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQtc2lsdmVybmluZS10ZWNoLXNwcmluZy1ib290LWp3dC10dXRvcmlhbC1zZWNyZXQ=
+  token-validity-in-seconds: 86400
