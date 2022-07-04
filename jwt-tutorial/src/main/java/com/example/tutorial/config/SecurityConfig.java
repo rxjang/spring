@@ -44,17 +44,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
+                .csrf().disable() // 토믄을 사용하기 떄문
                 .exceptionHandling()
                 .authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 .accessDeniedHandler(jwtAccessDeniedHandler)
 
-                .and()
+                .and() // h2 콘솔을 위해
                 .headers()
                 .frameOptions()
                 .sameOrigin()
 
-                .and()
+                .and() // session 사용하지 않기 때문
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 

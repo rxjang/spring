@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * 필요한 권한이 존재하지 않을 경우 403 forbidden 에러 리턴
+ */
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
     @Override

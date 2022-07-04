@@ -26,6 +26,17 @@ public class JwtFilter extends GenericFilterBean {
         this.tokenProvider = tokenProvider;
     }
 
+    /**
+     * jwt 토큰의 인증 정보를 SecurityContext에 저장하는 역할 수행
+     * @param request  The request to process
+     * @param response The response associated with the request
+     * @param chain    Provides access to the next filter in the chain for this
+     *                 filter to pass the request and response to for further
+     *                 processing
+     *
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
@@ -42,9 +53,12 @@ public class JwtFilter extends GenericFilterBean {
         chain.doFilter(request, response);
     }
 
+    /**
+     * Request Header에서 토큰 정보를 꺼내옴
+     */
     private String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Nearer ")) {
+        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
         return null;
