@@ -34,7 +34,7 @@ public class AuthController {
     public ResponseEntity<TokenDto> authorize(@Valid @RequestBody LoginDto loginDto) {
         UsernamePasswordAuthenticationToken authenticationToken
                 = new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword());
-        // authenticate 메소드가 실행이 될 때 loadUserByUs8o9kll ername 메소드가 실행됨
+        // authenticate 메소드가 실행이 될 때 loadUserByUsername 메소드가 실행됨
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
