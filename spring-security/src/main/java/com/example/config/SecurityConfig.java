@@ -30,7 +30,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                    .mvcMatchers("/", "/info", "/account/**").permitAll() // 모두 허용
+                    .mvcMatchers("/", "/info", "/account/**", "/signup").permitAll() // 모두 허용
                     .mvcMatchers("/admin").hasRole("ADMIN") // ADMIN 관한이 있어야함
                     .mvcMatchers("/user").hasRole("USER")
                 .anyRequest().authenticated() // 인증만되면 모두 접근 가능
