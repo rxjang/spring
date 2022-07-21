@@ -7,6 +7,7 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
 
 @Configuration
@@ -37,6 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin();
         http.httpBasic()
         ;
+
+        // SecurityContext를 자식 쓰레드에도 공유하는 전략.
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
     }
 
 }
