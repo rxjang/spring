@@ -1,5 +1,7 @@
 package com.example.config;
 
+import com.example.account.AccountService;
+import com.example.common.LoggingFilter;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
@@ -12,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +23,12 @@ import java.io.IOException;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    private final AccountService accountService;
+
+    public SecurityConfig(AccountService accountService) {
+        this.accountService = accountService;
+    }
 
     public SecurityExpressionHandler expressionHandler() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
@@ -37,6 +46,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        http.addFilterAfter(new LoggingFilter(), UsernamePasswordAuthenticationFilter.class);
+
         http.authorizeRequests()
                     .mvcMatchers("/", "/info", "/account/**", "/signup").permitAll() // 모두 허용
                     .mvcMatchers("/admin").hasRole("ADMIN") // ADMIN 관한이 있어야함
@@ -53,6 +65,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin()
                 .loginPage("/login")
                 .permitAll();
+
+        http.rememberMe()
+                .userDetailsService(accountService)
+                .key("remember-me-sample");
 
         http.sessionManagement()
                 .sessionFixation()
