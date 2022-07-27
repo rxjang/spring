@@ -4,6 +4,7 @@ import com.example.account.Account;
 import com.example.account.AccountContext;
 import com.example.common.SecurityLogger;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,6 +16,7 @@ import java.util.Collection;
 @Service
 public class SampleService {
 
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     public void dashboard() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();   // 사용자 정보
@@ -22,8 +24,8 @@ public class SampleService {
         Object credentials = authentication.getCredentials();
         boolean authenticated = authentication.isAuthenticated();
 
-        Account account = AccountContext.getAccount();
-        System.out.println("============" + account.getUsername());
+//        Account account = AccountContext.getAccount();
+//        System.out.println("============" + account.getUsername());
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         System.out.println(authentication);
