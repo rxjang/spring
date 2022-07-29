@@ -4,6 +4,7 @@ import com.example.account.Account;
 import com.example.account.AccountContext;
 import com.example.account.AccountRepository;
 import com.example.account.UserAccount;
+import com.example.book.BookRepository;
 import com.example.common.CurrentUser;
 import com.example.common.SecurityLogger;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,9 +23,12 @@ public class SampleController {
 
     private final AccountRepository accountRepository;
 
-    public SampleController(SampleService sampleService, AccountRepository accountRepository) {
+    private final BookRepository bookRepository;
+
+    public SampleController(SampleService sampleService, AccountRepository accountRepository, BookRepository bookRepository) {
         this.sampleService = sampleService;
         this.accountRepository = accountRepository;
+        this.bookRepository = bookRepository;
     }
 
     @GetMapping("/")
@@ -64,6 +68,7 @@ public class SampleController {
     @GetMapping("/user")
     public String user(Model model, Principal principal) {
         model.addAttribute("message", "Hello user, " + principal.getName());
+        model.addAttribute("books", bookRepository.findCurrentUserBooks());
         return "user";
     }
 
