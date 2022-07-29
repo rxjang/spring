@@ -1,8 +1,12 @@
 package com.example.form;
 
+import com.example.account.Account;
 import com.example.account.AccountContext;
 import com.example.account.AccountRepository;
+import com.example.account.UserAccount;
+import com.example.common.CurrentUser;
 import com.example.common.SecurityLogger;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +28,14 @@ public class SampleController {
     }
 
     @GetMapping("/")
-    public String index(Model model, Principal principal) {
+//    public String index(Model model, Principal principal) { 이 principal은 spring security에서 가져오는게 아님
+//    public String index(Model model, @AuthenticationPrincipal UserAccount userAccount) {
+    public String index(Model model, @CurrentUser Account account) {
 
-        if (principal == null) {
+        if (account == null) {
             model.addAttribute("message", "Hello Spring Security");
         } else {
-            model.addAttribute("message", "Hello " + principal.getName());
+            model.addAttribute("message", "Hello " + account.getUsername());
 
         }
         return "index";
