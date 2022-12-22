@@ -1,5 +1,6 @@
 package io.spring.chap01.user;
 
+import io.spring.chap01.user.dao.NUserDao;
 import io.spring.chap01.user.dao.UserDao;
 import io.spring.chap01.user.domain.User;
 
@@ -8,7 +9,7 @@ import java.sql.SQLException;
 public class TestUser {
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        UserDao dao = new UserDao();
+        UserDao dao = new NUserDao();
 
         User user = new User();
         user.setId("felix");

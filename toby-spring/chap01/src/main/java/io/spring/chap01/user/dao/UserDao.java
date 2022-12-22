@@ -3,19 +3,14 @@ package io.spring.chap01.user.dao;
 import io.spring.chap01.user.domain.User;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class UserDao {
+public abstract class UserDao {
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection c = DriverManager.getConnection(
-                "jdbc:mysql://localhost/springbook?useSSL=false&allowPublicKeyRetrieval=true",
-                "spring",
-                "Springbook@123");
+        Connection c = getConnection();
 
         PreparedStatement ps = c.prepareStatement("INSERT INTO users(id, name, password) VALUES (?, ?, ?)");
         ps.setString(1, user.getId());
@@ -28,11 +23,7 @@ public class UserDao {
     }
 
     public User get(String id) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection c = DriverManager.getConnection(
-                "jdbc:mysql://localhost/springbook?useSSL=false&allowPublicKeyRetrieval=true",
-                "spring",
-                "Springbook@123");
+        Connection c = getConnection();
 
         PreparedStatement ps = c.prepareStatement("SELECT * FROM users WHERE id = ?");
         ps.setString(1, id);
@@ -50,4 +41,7 @@ public class UserDao {
 
         return user;
     }
+
+    public abstract Connection getConnection() throws ClassNotFoundException, SQLException;
+
 }
