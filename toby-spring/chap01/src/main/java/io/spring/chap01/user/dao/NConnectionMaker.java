@@ -1,16 +1,13 @@
 package io.spring.chap01.user.dao;
 
-import io.spring.chap01.user.domain.User;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-//public class NUserDao extends UserDao {
-public class NUserDao {
+public class NConnectionMaker implements ConnectionMaker{
 
-//    @Override
-    public Connection getConnection() throws ClassNotFoundException, SQLException {
+    @Override
+    public Connection makeConnection() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.cj.jdbc.Driver");
         Connection c = DriverManager.getConnection(
                 "jdbc:mysql://localhost/springbook?useSSL=false&allowPublicKeyRetrieval=true",
@@ -18,5 +15,4 @@ public class NUserDao {
                 "Springbook@123");
         return c;
     }
-
 }

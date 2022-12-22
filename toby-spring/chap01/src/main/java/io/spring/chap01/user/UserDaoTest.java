@@ -1,15 +1,15 @@
 package io.spring.chap01.user;
 
-import io.spring.chap01.user.dao.NUserDao;
+import io.spring.chap01.user.dao.NConnectionMaker;
 import io.spring.chap01.user.dao.UserDao;
 import io.spring.chap01.user.domain.User;
 
 import java.sql.SQLException;
 
-public class TestUser {
+public class UserDaoTest {
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        UserDao dao = new NUserDao();
+        UserDao dao = new UserDao(new NConnectionMaker());
 
         User user = new User();
         user.setId("felix");
